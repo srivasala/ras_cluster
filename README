@@ -1,117 +1,102 @@
-Here’s a step-by-step guide to launch your **Keylime RAS components + PostgreSQL** in your Kubernetes cluster using the YAML manifests we’ve prepared:
+# Keylime Deployment for Kubernetes
 
----
-Generate self-signed certificates
-Run the deploy_tls.sh script to:
+This project provides a streamlined way to deploy Keylime components (Registrar, Verifier, Agent, Tenant) and a PostgreSQL database to a Kubernetes cluster. It includes scripts to automate the generation of manifests and the deployment process.
 
-Generate self-signed certificates (client and server) for each service.
-Create Kubernetes secrets for these certificates.
-Example:
-bash deploy_tls.sh keylime-system
+## Prerequisites
 
----
-Generate Kubernetes resource manifests
-Use the keylime_res_gen.py resource generator to create:
-ConfigMaps
-Deployment YAMLs
+- A running Kubernetes cluster
+- `kubectl` configured to connect to your cluster
+- `python3` and `pip3` installed
+- `bash` or a compatible shell
 
-for the Registrar, Verifier, Agent, and Tenant components.
-Example:
-python3 keylime_res_gen.py --namespace keylime-system
+## Quick Start
 
----
-Deploy the Keylime components
-Once the deployment manifests are generated:
+The `deploy.sh` script is the primary way to deploy and manage the Keylime components in your cluster. It automates the entire process, from generating manifests to applying them.
 
-Apply them using kubectl to deploy all services in your cluster.
+### Automated Deployment
 
----
-### **Step 1: Create the Namespace**
+The `deploy.sh` script handles the generation of Kubernetes manifests and their deployment.
 
-kubectl apply -f 01-namespace.yaml
----
+**Full Deployment (Default)**
 
-### **Step 2: Deploy PostgreSQL**
+To deploy all Keylime components to the `keylime-system` namespace with a single agent, simply run:
 
-Apply the manifest containing the PVC, Deployment, and Service for PostgreSQL:
+```bash
+./deploy.sh --namespace keylime-system
+```
 
-kubectl apply -f 14-pgdb-deployment.yaml
+**Customizing the Deployment**
 
-**Wait for pod to become ready:**
+The script offers flags to customize the deployment:
 
-kubectl get pods -n keylime-system
----
+- `--namespace <ns>`: Specify a different namespace.
+- `--agents <n>`: Specify the number of agent pods to create.
+- `[component...]`: Specify one or more components to deploy.
 
-###  **Step 3: Apply Keylime ConfigMaps**
-
-kubectl apply -f 02-keylime-tenant-config.yaml -f 03-registrar-config.yaml -f 04-verifier-config.yaml -f 05-agent-config.yaml
----
-
-### **Step 4: Deploy Registrar**
-kubectl apply -f 10-deployment-registrar.yaml
+**Available Components:**
+- `namespace`
+- `config`
+- `database`
+- `registrar`
+- `verifier`
+- `agent`
+- `tenant`
 
 ---
 
-### **Step 5: Deploy Verifier**
-kubectl apply -f 11-deployment-verifier.yaml
+### Deployment Examples
+
+**Deploy to a custom namespace:**
+```bash
+./deploy.sh --namespace my-keylime-app
+```
+
+**Deploy with multiple agents:**
+This will create three agent pods, each with a unique configuration.
+```bash
+./deploy.sh --namespace ras --agents 3
+```
+
+**Deploy only specific components:**
+If you've made changes to the verifier and agent, you can redeploy just those components.
+```bash
+./deploy.sh verifier agent
+```
+
+**Combine all options:**
+Deploy 5 agents and the verifier to a custom namespace.
+```bash
+./deploy.sh --namespace my-app --agents 5 verifier agent
+```
+
+**Get help:**
+To see all available options and components, use the `--help` flag.
+```bash
+./deploy.sh --help
+```
 
 ---
 
-### **Step 6: Deploy Keylime Agent (with swtpm)**
-kubectl apply -f 12-deployment-agent-swtpm.yaml
+### Verifying the Deployment
 
-> This pod runs `swtpm`, tpm2-tools and `keylime_agent` inside the same pod using a shared `emptyDir`.
+After running the deployment script, you can check the status of the pods and services in the target namespace:
 
----
+```bash
+kubectl get all -n <your-namespace>
+```
 
-### **Step 7: Deploy Tenant CLI Pod**
+### Interacting with the Tenant Pod
 
-kubectl apply -f 06-tenant-cli.yaml
+To run Keylime commands, you can `exec` into the tenant CLI pod:
 
-> You can `kubectl exec` into this pod to run Keylime commands.
----
+```bash
+kubectl exec -it keylime-cli -n <your-namespace> -- /bin/bash
+```
 
-### **Verify Everything**
+Inside the pod, you can then use the `keylime_tenant` CLI. For example:
 
-kubectl get all -n keylime-system
----
-### 🧪 **Try a Tenant Command**
-
-kubectl exec -it keylime-cli -n keylime-system -- /bin/bash
-
-Inside the pod, try:
-
+```bash
 keylime_tenant -c status
----------------------------------------------------
-We can test/interact with agent via swtpm (no real TPM required) using tpm2-tools : ref: https://tpm2-tools.readthedocs.io/en/latest/
-Testing swtpm with tpm2-tools
-
-kubectl -n sri-ns exec -it keylime-agent -c tpm2-tools -- /bin/bash:
-export TPM2TOOLS_TCTI="mssim:host=127.0.0.1,port=2321"
-tpm2_startup -c
-tpm2_pcrread
-
----
-root@keylime-db-7b77b756b7-btlzh:/# psql -U keylime                                                                              
-    psql (15.13 (Debian 15.13-1.pgdg120+1))
-Type "help" for help.
- 
-keylime=# \dt
-                     List of relations
-Schema |              Name              | Type  |  Owner
---------+--------------------------------+-------+---------
-public | alembic_version_cloud_verifier | table | keylime                                                                            public | alembic_version_registrar      | table | keylime                                                                            public | allowlists                     | table | keylime                                                                            public | mbpolicies                     | table | keylime                                                                            public | registrarmain                  | table | keylime                                                                            public | verifiermain                   | table | keylime                                                                           (6 rows)        
- 
-keylime=# \l
-                                               List of databases
-   Name    |  Owner  | Encoding |  Collate   |   Ctype    | ICU Locale | Locale Provider |  Access privileges
------------+---------+----------+------------+------------+------------+-----------------+---------------------
-keylime   | keylime | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            |
-postgres  | keylime | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            |
-template0 | keylime | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/keylime         +
-           |         |          |            |            |            |                 | keylime=CTc/keylime
-template1 | keylime | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/keylime         +
-           |         |          |            |            |            |                 | keylime=CTc/keylime
-(4 rows)                   
+```                   
  
 
