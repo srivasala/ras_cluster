@@ -1,0 +1,117 @@
+Here’s a step-by-step guide to launch your **Keylime RAS components + PostgreSQL** in your Kubernetes cluster using the YAML manifests we’ve prepared:
+
+---
+Generate self-signed certificates
+Run the deploy_tls.sh script to:
+
+Generate self-signed certificates (client and server) for each service.
+Create Kubernetes secrets for these certificates.
+Example:
+bash deploy_tls.sh keylime-system
+
+---
+Generate Kubernetes resource manifests
+Use the keylime_res_gen.py resource generator to create:
+ConfigMaps
+Deployment YAMLs
+
+for the Registrar, Verifier, Agent, and Tenant components.
+Example:
+python3 keylime_res_gen.py --namespace keylime-system
+
+---
+Deploy the Keylime components
+Once the deployment manifests are generated:
+
+Apply them using kubectl to deploy all services in your cluster.
+
+---
+### **Step 1: Create the Namespace**
+
+kubectl apply -f 01-namespace.yaml
+---
+
+### **Step 2: Deploy PostgreSQL**
+
+Apply the manifest containing the PVC, Deployment, and Service for PostgreSQL:
+
+kubectl apply -f 14-pgdb-deployment.yaml
+
+**Wait for pod to become ready:**
+
+kubectl get pods -n keylime-system
+---
+
+###  **Step 3: Apply Keylime ConfigMaps**
+
+kubectl apply -f 02-keylime-tenant-config.yaml -f 03-registrar-config.yaml -f 04-verifier-config.yaml -f 05-agent-config.yaml
+---
+
+### **Step 4: Deploy Registrar**
+kubectl apply -f 10-deployment-registrar.yaml
+
+---
+
+### **Step 5: Deploy Verifier**
+kubectl apply -f 11-deployment-verifier.yaml
+
+---
+
+### **Step 6: Deploy Keylime Agent (with swtpm)**
+kubectl apply -f 12-deployment-agent-swtpm.yaml
+
+> This pod runs `swtpm`, tpm2-tools and `keylime_agent` inside the same pod using a shared `emptyDir`.
+
+---
+
+### **Step 7: Deploy Tenant CLI Pod**
+
+kubectl apply -f 06-tenant-cli.yaml
+
+> You can `kubectl exec` into this pod to run Keylime commands.
+---
+
+### **Verify Everything**
+
+kubectl get all -n keylime-system
+---
+### 🧪 **Try a Tenant Command**
+
+kubectl exec -it keylime-cli -n keylime-system -- /bin/bash
+
+Inside the pod, try:
+
+keylime_tenant -c status
+---------------------------------------------------
+We can test/interact with agent via swtpm (no real TPM required) using tpm2-tools : ref: https://tpm2-tools.readthedocs.io/en/latest/
+Testing swtpm with tpm2-tools
+
+kubectl -n sri-ns exec -it keylime-agent -c tpm2-tools -- /bin/bash:
+export TPM2TOOLS_TCTI="mssim:host=127.0.0.1,port=2321"
+tpm2_startup -c
+tpm2_pcrread
+
+---
+root@keylime-db-7b77b756b7-btlzh:/# psql -U keylime                                                                              
+    psql (15.13 (Debian 15.13-1.pgdg120+1))
+Type "help" for help.
+ 
+keylime=# \dt
+                     List of relations
+Schema |              Name              | Type  |  Owner
+--------+--------------------------------+-------+---------
+public | alembic_version_cloud_verifier | table | keylime                                                                            public | alembic_version_registrar      | table | keylime                                                                            public | allowlists                     | table | keylime                                                                            public | mbpolicies                     | table | keylime                                                                            public | registrarmain                  | table | keylime                                                                            public | verifiermain                   | table | keylime                                                                           (6 rows)        
+ 
+keylime=# \l
+                                               List of databases
+   Name    |  Owner  | Encoding |  Collate   |   Ctype    | ICU Locale | Locale Provider |  Access privileges
+-----------+---------+----------+------------+------------+------------+-----------------+---------------------
+keylime   | keylime | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            |
+postgres  | keylime | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            |
+template0 | keylime | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/keylime         +
+           |         |          |            |            |            |                 | keylime=CTc/keylime
+template1 | keylime | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/keylime         +
+           |         |          |            |            |            |                 | keylime=CTc/keylime
+(4 rows)                   
+ 
+

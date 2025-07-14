@@ -1,0 +1,92 @@
+1. Create Namespaces
+kubectl create namespace keylime-system
+kubectl create namespace keylime-agents
+
+Optionally add the Bitnami repo first, like this:
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+2. Deploy PostgreSQL
+Use Helm or raw YAML
+ helm install keylime-db bitnami/postgresql \
+  --namespace keylime-system \
+  --set auth.username=keylime \
+  --set auth.password=keylime \
+  --set auth.database=keylime    
+---------
+NAME: keylime-db                      
+LAST DEPLOYED: Sun Jun 22 23:14:14 2025
+NAMESPACE: keylime-system              
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+CHART NAME: postgresql
+CHART VERSION: 16.7.12
+APP VERSION: 17.5.0
+Did you know there are enterprise versions of the Bitnami catalog? For enhanced secure software supply chain features, unlimited pulls from Docker, LTS support, or application customization, see Bitnami Premium or Tanzu Application Catalog. See https://www.arrow.com/globalecs/na/vendors/bitnami for more information.
+** Please be patient while the chart is being deployed **                                                                            
+PostgreSQL can be accessed via port 5432 on the following DNS names from within your cluster:
+    keylime-db-postgresql.keylime-system.svc.cluster.local - Read/Write connection
+
+To get the password for "postgres" run:
+    export POSTGRES_PASSWORD=$(kubectl get secret --namespace keylime-system keylime-db-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
+	To connect to your database run the following command:
+	kubectl run keylime-db-postgresql-client --rm --tty -i --restart='Never' --namespace keylime-system --image docker.io/bitnami/postgresql:17.5.0-debian-12-r12 --env="PGPASSWORD=$POSTGRES_PASSWORD" \ 
+	--command -- psql --host keylime-db-postgresql -U postgres -d keylimedb -p 5432  
+	> NOTE: If you access the container using bash, make sure that you execute "/opt/bitnami/scripts/postgresql/entrypoint.sh /bin/bash" in order to avoid the error "psql: local user with ID 1001} does not exist"
+	To connect to your database from outside the cluster execute the following commands:
+	kubectl port-forward --namespace keylime-system svc/keylime-db-postgresql 5432:5432 &
+	PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d keylimedb -p 5432 
+	WARNING: The configured password will be ignored on new installation in case when previous PostgreSQL release was deleted through the helm command. In that case, old PVC will have an old password, and setting it through helm won't take effect. Deleting persistent volumes (PVs) will solve the issue.
+WARNING: There are "resources" sections in the chart not set. Using "resourcesPreset" is not recommended for production. For production installations, please set the following values according to your workload needs:                                                    
+- primary.resources                                                                                                                  
+- readReplicas.resources
++info https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+---------
+since Keylime already publishes Docker images on quay.io/keylime, you don’t need to build them yourself for test purposes. You can deploy them into Kubernetes using plain YAML or Helm
+2. (Optional) Create Secrets for TLS
+If you want to use TLS (recommended for realistic attestation), you can create Kubernetes TLS secrets like:
+kubectl create secret tls keylime-tls \
+  --cert=registrar.crt \
+  --key=registrar.key \
+  -n keylime-system
+
+-------------
+<TODO: Steps to deploy the RAS components > 
+
+
+kubectl run keylime-cli \
+  --image=quay.io/keylime/keylime_tenant \
+  --namespace=keylime-system \
+  --stdin --tty \
+  --command -- /bin/bash
+
+keylime_tenant -c add \
+  -u <uuid> \
+  -v verifier.keylime-system.svc.cluster.local \
+  -t <agent-ip> \
+  -f /tmp/secret.txt
+
+-------------
+There are some failures, debugging them 
+
+kubectl describe pod keylime-cli -n keylime-system
+kubectl logs keylime-cli -n keylime-system
+
+Understand what went wrong in the deployment 
+kubectl edit deployment keylime-registrar -n keylime-system
+
+somehow the crashloopbackoff error is triggering high cpu due to which the host system is hanging. how can i stop these crashing pods ?
+kubectl delete deployment keylime-registrar -n keylime-system
+kubectl delete pod keylime-cli -n keylime-system
+
+-----------------------
+
+I was debugging the registrar failure and here is how i tested 
+edit the deployment of registrar with 
+    command: ["/bin/sh", "-c", "sleep 3600"]
+
+kubectl exec -it keylime-registrar-ffc7bb847-9c4r7 -n keylime-system -- /bin/bash
+python3 -m keylime.cmd.registrar
+---
+Exception: The 'tls_dir' option is not set for 'registrar'

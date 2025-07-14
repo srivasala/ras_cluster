@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: keylime-agent
+  namespace: {{ namespace }}
+  labels:
+    app: keylime-agent
+spec:
+  containers:
+    - name: swtpm
+      image: docker.io/danieltrick/swtpm-docker:r13
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+      ports:
+        - containerPort: 2321
+        - containerPort: 2322
+      volumeMounts:
+        - name: tpm-state 
+          mountPath: /tmp/mytpm1
+
+    - name: tpm2-tools
+      image: docker.io/svasala/tpm2-tools:latest
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          apt-get update && apt-get install -y netcat &&
+          while ! nc -zv 127.0.0.1 2321; do
+            echo "Waiting for SWTPM on 2321...";
+            sleep 2;
+          done
+          # Initialize TPM
+          export TPM2TOOLS_TCTI="swtpm:host=127.0.0.1,port=2321" && \
+          tpm2_startup -c && touch /tmp/mytpm1/tpm-initialized && echo "tpm2 startup succeeded"
+          sleep 3600  # Keep container running for exec/debug
+      volumeMounts:
+        - name: tpm-state
+          mountPath: /tmp/mytpm1
+  
+    - name: agent
+      image: quay.io/keylime/keylime_agent
+      command:
+        - /bin/sh
+        - '-c'
+      args:
+        - |
+          # Wait for TPM to be initialized
+          while [ ! -f /tmp/mytpm1/tpm-initialized ]; do
+            echo "Waiting for TPM initialization...";
+            sleep 2;
+          done
+          keylime_agent
+          sleep 300 # to provide a timewindow for debugging post exit/failure
+      readinessProbe:
+        exec:
+          command: ["test", "-f", "/tmp/mytpm1/tpm-initialized"]
+        initialDelaySeconds: 5
+        periodSeconds: 2
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        capabilities:
+          add:
+          - SYS_ADMIN
+      env:
+      - name: TPM_DEVICE
+        value: "swtpm:host=127.0.0.1,port=2321"
+      - name: TCTI
+        value: "swtpm:host=127.0.0.1,port=2321"
+      ports:
+      - containerPort: 9002
+      volumeMounts:
+      - name: tpm-state
+        mountPath: /tmp/mytpm1
+      - name: agent-config
+        mountPath: /etc/keylime/agent.conf
+        subPath: agent.conf
+      - name: tls
+        mountPath: /etc/keylime/tls
+        readOnly: true
+      - name: keylime-data
+        mountPath: /var/lib/keylime
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "400m"
+        limits:
+          memory: "1G"
+          cpu: "800m"
+  volumes:
+  - name: tpm-state
+    emptyDir: {}
+  - name: agent-config
+    configMap:
+      name: keylime-agent-config
+  - name: tls
+    secret:
+      secretName: agent-tls   # Change per service
+  - name: keylime-data
+    emptyDir:
+      medium: Memory
