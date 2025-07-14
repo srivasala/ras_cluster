@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: keylime-agent
+  name: agent-{{ agent_id }}
   namespace: {{ namespace }}
   labels:
-    app: keylime-agent
+    app: agent-{{ agent_id }}
 spec:
   containers:
     - name: swtpm
@@ -92,7 +92,7 @@ spec:
     emptyDir: {}
   - name: agent-config
     configMap:
-      name: keylime-agent-config
+      name: agent-config-{{ agent_id }}
   - name: tls
     secret:
       secretName: agent-tls   # Change per service

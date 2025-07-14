@@ -1,18 +1,17 @@
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: keylime-agent-config
+  name: agent-config-{{ agent_id }}
   namespace: {{ namespace }}
 data:
   agent.conf: |
       [agent]
       version = "2.4"
       api_versions = "default"
-      uuid = "d432fbb3-d2f1-4a97-9ef7-75bd81c00000"
+      uuid = "{{ agent_uuid }}"
       ip = "0.0.0.0"
       port = 9002
-      contact_ip = "a1.{{ namespace }}.local"
+      contact_ip = "a{{ agent_id }}.{{ namespace }}.local"
       contact_port = 9002
       registrar_ip = "registrar.{{ namespace }}"
       registrar_port = 8890

@@ -4,30 +4,32 @@ set -e # Exit immediately if a command exits with a non-zero status.
 
 # --- Help Function ---
 usage() {
-    echo "Usage: $0 [--namespace <namespace>] [component...]"
+    echo "Usage: $0 [--namespace <namespace>] [--agents <n>] [component...]"
     echo
     echo "Deploys Keylime components to a Kubernetes cluster."
     echo
     echo "Options:"
     echo "  --namespace <ns>  Specify the namespace to deploy to (default: keylime-system)."
+    echo "  --agents <n>      Specify the number of agent pods to deploy (default: 1)."
     echo "  -h, --help        Show this help message."
     echo
     echo "Components:"
     echo "  namespace         Deploys the namespace."
-    echo "  config            Deploys all ConfigMaps."
+    echo "  config            Deploys all ConfigMaps (including all agent configs)."
     echo "  database          Deploys the PostgreSQL database."
     echo "  registrar         Deploys the Keylime registrar."
     echo "  verifier          Deploys the Keylime verifier."
-    echo "  agent             Deploys the Keylime agent."
+    echo "  agent             Deploys the Keylime agent(s)."
     echo "  tenant            Deploys the Keylime tenant CLI pod."
     echo
     echo "If no components are specified, all components will be deployed in the correct order."
-    echo "Example: $0 --namespace my-app agent verifier"
+    echo "Example: $0 --namespace my-app --agents 3 agent verifier"
     exit 0
 }
 
 # --- Configuration & Argument Parsing ---
 NAMESPACE=""
+AGENT_COUNT=1
 COMPONENTS_TO_DEPLOY=()
 
 while [[ $# -gt 0 ]]; do
@@ -35,6 +37,10 @@ while [[ $# -gt 0 ]]; do
     case $key in
     --namespace)
         NAMESPACE="$2"
+        shift 2
+        ;;
+    --agents)
+        AGENT_COUNT="$2"
         shift 2
         ;;
     -h | --help)
@@ -63,12 +69,13 @@ echo "--------------------------------------------------"
 echo " Keylime Deployment Script"
 echo "--------------------------------------------------"
 echo "Namespace: $NAMESPACE"
+echo "Agents: $AGENT_COUNT"
 echo "Components: ${COMPONENTS_TO_DEPLOY[@]}"
 echo "--------------------------------------------------"
 
 # --- 1. Generate Manifests ---
-echo ">>> Generating Kubernetes manifests for namespace '$NAMESPACE'..."
-python3 keylime_res_gen.py --namespace "$NAMESPACE"
+echo ">>> Generating Kubernetes manifests..."
+python3 keylime_res_gen.py --namespace "$NAMESPACE" --agents "$AGENT_COUNT"
 echo ">>> Manifests generated successfully."
 echo "--------------------------------------------------"
 
@@ -100,21 +107,26 @@ for component in "${COMPONENTS_TO_DEPLOY[@]}"; do
         apply_manifest "$ARTIFACTS_DIR/02-keylime-tenant-config.yaml" "Tenant ConfigMap"
         apply_manifest "$ARTIFACTS_DIR/03-registrar-config.yaml" "Registrar ConfigMap"
         apply_manifest "$ARTIFACTS_DIR/04-verifier-config.yaml" "Verifier ConfigMap"
-        apply_manifest "$ARTIFACTS_DIR/05-agent-config.yaml" "Agent ConfigMap"
+        for i in $(seq 1 $AGENT_COUNT); do
+            apply_manifest "$ARTIFACTS_DIR/05-agent-config-$i.yaml" "Agent $i ConfigMap"
+        done
         ;;
     database)
         apply_manifest "$ARTIFACTS_DIR/14-pgdb-deployment.yaml" "Postgres PVC and Deployment"
-        sleep 5
+        sleep 10
         ;;
     registrar)
         apply_manifest "$ARTIFACTS_DIR/10-deployment-registrar.yaml" "Registrar Deployment"
-        sleep 5
+        sleep 10
         ;;
     verifier)
         apply_manifest "$ARTIFACTS_DIR/11-deployment-verifier.yaml" "Verifier Deployment"
+        sleep 10
         ;;
     agent)
-        apply_manifest "$ARTIFACTS_DIR/12-deployment-agent-swtpm.yaml" "Agent Pod"
+        for i in $(seq 1 $AGENT_COUNT); do
+            apply_manifest "$ARTIFACTS_DIR/12-deployment-agent-swtpm-$i.yaml" "Agent $i Pod"
+        done
         ;;
     tenant)
         apply_manifest "$ARTIFACTS_DIR/13-tenant-cli.yaml" "Tenant CLI Pod"
@@ -128,4 +140,3 @@ done
 echo "--------------------------------------------------"
 echo ">>> Deployment to namespace '$NAMESPACE' completed successfully!"
 echo "--------------------------------------------------"
-
