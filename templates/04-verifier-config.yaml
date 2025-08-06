@@ -126,14 +126,14 @@ data:
     # Either how long to wait between failed attempts to connect to a cloud agent
     # in seconds, or the base for the exponential backoff algorithm.
     # Floating point values accepted here.
-    retry_interval = 2
+    retry_interval = 5
     
     # Number of retries to connect to an agent before giving up. Must be an integer.
     max_retries = 5
     
     # Time between integrity measurement checks, in seconds.  If set to "0", checks
     # will done as fast as possible.  Floating point values accepted here.
-    quote_interval = 2
+    quote_interval = 30
     
     # The verifier limits the size of upload payloads (allowlists) which defaults to
     # 100MB (104857600 bytes). This setting can be raised (or lowered) based on the

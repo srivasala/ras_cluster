@@ -27,7 +27,7 @@ data:
     # If set as 'default', share the files with the verifier by using the
     # 'var/lib/keylime/cv_ca', which should contain the files indicated by the
     # 'client_key', 'client_cert', and 'trusted_server_ca' options.
-    tls_dir = default
+    tls_dir = "/etc/keylime/tls"
     
     # Enable mTLS communication between agent, verifier and tenant.
     # Details on why setting it to "False" is generally considered insecure can be found
@@ -40,7 +40,7 @@ data:
     # services using TLS.
     #
     # If set as 'default', the 'client-private.pem' value is used.
-    client_key = /var/lib/keylime/cv_ca/client-private.pem
+    client_key = "/etc/keylime/tls/client-private.pem"
     
     # Set the password used to encrypt the private key file.
     # If client_key is set as 'default', should match the password set in the
@@ -53,19 +53,19 @@ data:
     # services using TLS.
     #
     # If set as 'default', the 'client-cert.crt' value is used.
-    client_cert = /var/lib/keylime/cv_ca/client-cert.crt
+    client_cert = "/etc/keylime/tls/client-cert.crt"
     
     # The list of trusted server CA certificates.
     # The files in the list should be stored in the directory set in the 'tls_dir'
     # option.
     #
     # If set as 'default', the value is set as '[cacert.crt]'
-    trusted_server_ca = ['/var/lib/keylime/cv_ca/ca.crt']
+    trusted_server_ca = ['/etc/keylime/tls/ca.crt']
     
     # Directory containing the EK CA certificates.
     # The EK certificate provided by the agent will be validated against the CAs
     # located in this directory.
-    tpm_cert_store = /var/lib/keylime/tpm_cert_store
+    tpm_cert_store = "/var/lib/keylime/tpm_cert_store"
     
     # Maximum size of the payload in bytes. The value should match the 'secure_size'
     # option in the agent configuration
@@ -115,7 +115,7 @@ data:
     # might provide a signed list of EK public key hashes.  Then you could write
     # an ek_check_script that checks the signature of the allowlist and then
     # compares the hash of the given EK with the allowlist.
-    require_ek_cert = True
+    require_ek_cert = False
     
     # Optional script to execute to check the EK and/or EK certificate against a
     # allowlist or any other additional EK processing you want to do. Runs in

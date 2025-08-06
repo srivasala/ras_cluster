@@ -15,7 +15,7 @@ spec:
       mountPath: /etc/keylime/tenant.conf
       subPath: tenant.conf
     - name: tls
-      mountPath: /var/lib/keylime/cv_ca/
+      mountPath: /etc/keylime/tls
       readOnly: true
     resources:
       requests:

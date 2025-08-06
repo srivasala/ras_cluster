@@ -40,9 +40,29 @@ generate_cert() {
   fi
 }
 
-
+# Generate CA key
 openssl genrsa -out ca.key 2048
-openssl req -x509 -new -nodes -key ca.key -sha256 -days 365 -out ca.crt -subj "/CN=keylime-ca"
+
+# Generate CA cert with extensions using a config file
+cat > ca.cnf <<EOF
+[ req ]
+default_bits       = 2048
+default_md         = sha256
+prompt             = no
+distinguished_name = dn
+x509_extensions    = v3_ca
+
+[ dn ]
+CN = keylime-ca
+
+[ v3_ca ]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer
+basicConstraints = critical, CA:true
+keyUsage = critical, keyCertSign, cRLSign
+EOF
+
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 365 -out ca.crt -config ca.cnf
 
 #generate_cert $1
 

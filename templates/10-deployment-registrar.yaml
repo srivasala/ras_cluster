@@ -19,6 +19,7 @@ spec:
         image: quay.io/keylime/keylime_registrar
         ports:
         - containerPort: 8890
+        - containerPort: 8891
         volumeMounts:
         - name: registrar-config
           mountPath: /etc/keylime/registrar.conf
@@ -50,6 +51,11 @@ spec:
   selector:
     app: registrar
   ports:
-  - protocol: TCP
+  - name: http
+    protocol: TCP
     port: 8890
     targetPort: 8890
+  - name: https
+    protocol: TCP
+    port: 8891
+    targetPort: 8891
