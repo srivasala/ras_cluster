@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keylime-verifier
+  namespace: {{ namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: verifier
+  template:
+    metadata:
+      labels:
+        app: verifier
+    spec:
+      containers:
+      - name: verifier
+        image: quay.io/keylime/keylime_verifier
+        ports:
+        - containerPort: 8881
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/keylime/verifier.conf
+          subPath: verifier.conf
+        - name: tls
+          mountPath: /etc/keylime/tls
+          readOnly: true
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1G"
+            cpu: "500m"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: keylime-verifier-config
+      - name: tls
+        secret:
+         secretName: verifier-tls   # Change per service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: verifier
+  namespace: {{ namespace }}
+spec:
+  selector:
+    app: verifier
+  ports:
+  - protocol: TCP
+    port: 8881
+    targetPort: 8881

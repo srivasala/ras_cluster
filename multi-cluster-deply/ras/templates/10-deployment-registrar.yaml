@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keylime-registrar
+  namespace: {{ namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registrar
+  template:
+    metadata:
+      labels:
+        app: registrar
+    spec:
+      containers:
+      - name: registrar
+        image: quay.io/keylime/keylime_registrar
+        ports:
+        - containerPort: 8890
+        - containerPort: 8891
+        volumeMounts:
+        - name: registrar-config
+          mountPath: /etc/keylime/registrar.conf
+          subPath: registrar.conf
+        - name: tls
+          mountPath: /etc/keylime/tls
+          readOnly: true
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1G"
+            cpu: "500m"
+      volumes:
+      - name: registrar-config
+        configMap:
+          name: registrar-config
+      - name: tls
+        secret:
+          secretName: registrar-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registrar
+  namespace: {{ namespace }}
+spec:
+  selector:
+    app: registrar
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8890
+    targetPort: 8890
+  - name: https
+    protocol: TCP
+    port: 8891
+    targetPort: 8891

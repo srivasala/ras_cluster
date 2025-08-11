@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: keylime-cli
+  namespace: {{ namespace }}
+spec:
+  containers:
+  - name: tenant
+    image: quay.io/keylime/keylime_tenant
+    command: ["/bin/bash"]
+    args: ["-c", "sleep infinity"]
+    volumeMounts:
+    - name: tenant-conf
+      mountPath: /etc/keylime/tenant.conf
+      subPath: tenant.conf
+    - name: tls
+      mountPath: /etc/keylime/tls
+      readOnly: true
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+  volumes:
+  - name: tenant-conf
+    configMap:
+      name: keylime-tenant-config
+  - name: tls
+    secret:
+      secretName: tenant-tls
+  restartPolicy: Always
