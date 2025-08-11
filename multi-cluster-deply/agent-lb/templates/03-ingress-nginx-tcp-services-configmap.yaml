@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: {{ namespace }}
+  labels:
+    app: ingress-nginx

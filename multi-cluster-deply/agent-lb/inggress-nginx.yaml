@@ -1,0 +1,2186 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      ccd/addon: ingress
+      cni.projectcalico.org/containerID: 1fb7da74839a640a01ba379c75b566079dbc955f2702e0da058ce3d033f07c23
+      cni.projectcalico.org/podIP: 192.168.5.140/32
+      cni.projectcalico.org/podIPs: 192.168.5.140/32,fd00:eccd:20:ffff:ca32:dbb9:cab6:b4cc/128
+      ericsson.ccd.workload.io/management: "True"
+      kyverno.io/verify-images: '{"registry.eccd.local:5000/defaultbackend:1.5-2-b7f47fdf":"pass"}'
+    creationTimestamp: "2025-07-03T15:41:09Z"
+    generateName: default-http-backend-66f4bc964c-
+    generation: 1
+    labels:
+      app: default-http-backend
+      ccd/addon: ingress
+      pod-template-hash: 66f4bc964c
+    name: default-http-backend-66f4bc964c-tkxwv
+    namespace: ingress-nginx
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: default-http-backend-66f4bc964c
+      uid: 0bb56bcd-dcf3-4511-b45c-d4756b6d84d0
+    resourceVersion: "24485"
+    uid: 24bc1961-7ca8-493a-825e-fc3f20afd1f1
+  spec:
+    automountServiceAccountToken: false
+    containers:
+    - image: registry.eccd.local:5000/defaultbackend:1.5-2-b7f47fdf
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: 8080
+          scheme: HTTP
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 5
+      name: default-http-backend
+      ports:
+      - containerPort: 8080
+        protocol: TCP
+      resources:
+        limits:
+          cpu: 20m
+          ephemeral-storage: 250Mi
+          memory: 50Mi
+        requests:
+          cpu: 10m
+          ephemeral-storage: 50Mi
+          memory: 30Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - all
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 115044
+        runAsNonRoot: true
+        runAsUser: 115044
+        seccompProfile:
+          type: RuntimeDefault
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/localtime
+        name: tz-config
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: control-plane-dc163-ccd1-master2-2001
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: ""
+    preemptionPolicy: PreemptLowerPriority
+    priority: 2000000000
+    priorityClassName: system-cluster-critical
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: nginx-ingress-serviceaccount
+    serviceAccountName: nginx-ingress-serviceaccount
+    terminationGracePeriodSeconds: 60
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - hostPath:
+        path: /etc/localtime
+        type: ""
+      name: tz-config
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:13Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:09Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:13Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:13Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:09Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://2d6cbddd84de406058341725bf4e3cad4f7ad6b77926e7712aef122682f254d7
+      image: registry.eccd.local:5000/defaultbackend:1.5-2-b7f47fdf
+      imageID: registry.eccd.local:5000/defaultbackend@sha256:4dc5e07c8ca4e23bddb3153737d7b8c556e5fb2f29c4558b7cd6e6df99c512c7
+      lastState: {}
+      name: default-http-backend
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-07-03T15:41:13Z"
+      user:
+        linux:
+          gid: 115044
+          supplementalGroups:
+          - 115044
+          uid: 115044
+      volumeMounts:
+      - mountPath: /etc/localtime
+        name: tz-config
+    hostIP: 10.0.10.101
+    hostIPs:
+    - ip: 10.0.10.101
+    - ip: fd00:2:3320:10::101
+    phase: Running
+    podIP: 192.168.5.140
+    podIPs:
+    - ip: 192.168.5.140
+    - ip: fd00:eccd:20:ffff:ca32:dbb9:cab6:b4cc
+    qosClass: Burstable
+    startTime: "2025-07-03T15:41:09Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      ccd/addon: ingress
+      cni.projectcalico.org/containerID: bcd9703daef8c8edb8a657229ae53f371de1b828bc04c9f777fe65cb6035d0d2
+      cni.projectcalico.org/podIP: 192.168.33.11/32
+      cni.projectcalico.org/podIPs: 192.168.33.11/32,fd00:eccd:20:ffff:e471:a3f4:90e6:cd8b/128
+      ericsson.ccd.workload.io/management: "True"
+      kyverno.io/verify-images: '{"registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf":"pass"}'
+      prometheus.io/port: "10254"
+      prometheus.io/scrape: "true"
+    creationTimestamp: "2025-07-03T15:41:18Z"
+    generateName: nginx-ingress-controller-7d88d49dfb-
+    generation: 1
+    labels:
+      app: ingress-nginx
+      ccd/addon: ingress
+      ccd/mount-service-account-token: "true"
+      pod-template-hash: 7d88d49dfb
+    name: nginx-ingress-controller-7d88d49dfb-2tprz
+    namespace: ingress-nginx
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: nginx-ingress-controller-7d88d49dfb
+      uid: a2a0899f-b361-4147-a714-89bfa1b9b5bc
+    resourceVersion: "25010"
+    uid: 556c8d0c-a4ef-42db-9ce8-505b16e8e80c
+  spec:
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - ingress-nginx
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+    containers:
+    - args:
+      - /nginx-ingress-controller
+      - --default-backend-service=ingress-nginx/default-http-backend
+      - --configmap=ingress-nginx/nginx-configuration
+      - --tcp-services-configmap=ingress-nginx/tcp-services
+      - --udp-services-configmap=ingress-nginx/udp-services
+      - --annotations-prefix=nginx.ingress.kubernetes.io
+      - --enable-ssl-passthrough
+      - --enable-annotation-validation=true
+      - --watch-ingress-without-class=true
+      - --v=0
+      - --default-ssl-certificate=ingress-nginx/default-ingress-tls-secret
+      env:
+      - name: POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: POD_NAMESPACE
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.namespace
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: 10254
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: nginx-ingress-controller
+      ports:
+      - containerPort: 80
+        name: http
+        protocol: TCP
+      - containerPort: 443
+        name: https
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: 10254
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: "1"
+          ephemeral-storage: 2Gi
+          memory: 2Gi
+        requests:
+          cpu: 100m
+          ephemeral-storage: 512Mi
+          memory: 500Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add:
+          - NET_BIND_SERVICE
+          drop:
+          - all
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 115044
+        runAsNonRoot: true
+        runAsUser: 115044
+        seccompProfile:
+          type: RuntimeDefault
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/ingress-controller/ssl
+        name: ssl-certs
+      - mountPath: /etc/ingress-controller/auth
+        name: ingress-basic-auth
+      - mountPath: /tmp/nginx
+        name: nginx-tmp
+      - mountPath: /etc/ingress-controller/telemetry
+        name: ingress-controller-telemetry
+      - mountPath: /etc/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-9gp9k
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - cp -r /etc/nginx/* /mnt/nginx/
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imagePullPolicy: IfNotPresent
+      name: copy-nginx-config
+      resources:
+        limits:
+          cpu: 20m
+          memory: 50Mi
+        requests:
+          cpu: 10m
+          memory: 30Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - all
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 115044
+        runAsNonRoot: true
+        runAsUser: 115044
+        seccompProfile:
+          type: RuntimeDefault
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /mnt/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-9gp9k
+        readOnly: true
+    nodeName: control-plane-dc163-ccd1-master3-1002
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: ""
+    preemptionPolicy: PreemptLowerPriority
+    priority: 2000000000
+    priorityClassName: system-cluster-critical
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: nginx-ingress-serviceaccount
+    serviceAccountName: nginx-ingress-serviceaccount
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - emptyDir: {}
+      name: ssl-certs
+    - emptyDir: {}
+      name: ingress-basic-auth
+    - emptyDir: {}
+      name: nginx-tmp
+    - emptyDir: {}
+      name: ingress-controller-telemetry
+    - emptyDir: {}
+      name: nginx-config
+    - name: kube-api-access-9gp9k
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:22Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:24Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:36Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:36Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:18Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://baceb9b4b0fc51ec2e64109113f3ab14edc8bbaa353254f7c30e8285be69cfd5
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imageID: registry.eccd.local:5000/nginx-ingress-controller@sha256:1b493796f5dfbfd2e00a255b7fc32af849bc416ad45b31558540a951d1afa3ba
+      lastState: {}
+      name: nginx-ingress-controller
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-07-03T15:41:24Z"
+      user:
+        linux:
+          gid: 115044
+          supplementalGroups:
+          - 115044
+          uid: 115044
+      volumeMounts:
+      - mountPath: /etc/ingress-controller/ssl
+        name: ssl-certs
+      - mountPath: /etc/ingress-controller/auth
+        name: ingress-basic-auth
+      - mountPath: /tmp/nginx
+        name: nginx-tmp
+      - mountPath: /etc/ingress-controller/telemetry
+        name: ingress-controller-telemetry
+      - mountPath: /etc/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-9gp9k
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.0.10.102
+    hostIPs:
+    - ip: 10.0.10.102
+    - ip: fd00:2:3320:10::102
+    initContainerStatuses:
+    - containerID: containerd://1cbb5ab469d3dd6af115b992becadc0e405b05b021cf6f94ac5e2aa679961671
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imageID: registry.eccd.local:5000/nginx-ingress-controller@sha256:1b493796f5dfbfd2e00a255b7fc32af849bc416ad45b31558540a951d1afa3ba
+      lastState: {}
+      name: copy-nginx-config
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://1cbb5ab469d3dd6af115b992becadc0e405b05b021cf6f94ac5e2aa679961671
+          exitCode: 0
+          finishedAt: "2025-07-03T15:41:22Z"
+          reason: Completed
+          startedAt: "2025-07-03T15:41:21Z"
+      user:
+        linux:
+          gid: 115044
+          supplementalGroups:
+          - 115044
+          uid: 115044
+      volumeMounts:
+      - mountPath: /mnt/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-9gp9k
+        readOnly: true
+        recursiveReadOnly: Disabled
+    phase: Running
+    podIP: 192.168.33.11
+    podIPs:
+    - ip: 192.168.33.11
+    - ip: fd00:eccd:20:ffff:e471:a3f4:90e6:cd8b
+    qosClass: Burstable
+    startTime: "2025-07-03T15:41:18Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      ccd/addon: ingress
+      cni.projectcalico.org/containerID: 04e3451be7dfe403cd2716838d62f2a6eaf0c3f8c8278f33574b3f17e4395fc7
+      cni.projectcalico.org/podIP: 192.168.219.139/32
+      cni.projectcalico.org/podIPs: 192.168.219.139/32,fd00:eccd:20:ffff:b34b:4141:fda2:6a8b/128
+      ericsson.ccd.workload.io/management: "True"
+      kyverno.io/verify-images: '{"registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf":"pass"}'
+      prometheus.io/port: "10254"
+      prometheus.io/scrape: "true"
+    creationTimestamp: "2025-07-03T15:41:18Z"
+    generateName: nginx-ingress-controller-7d88d49dfb-
+    generation: 1
+    labels:
+      app: ingress-nginx
+      ccd/addon: ingress
+      ccd/mount-service-account-token: "true"
+      pod-template-hash: 7d88d49dfb
+    name: nginx-ingress-controller-7d88d49dfb-2w6ts
+    namespace: ingress-nginx
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: nginx-ingress-controller-7d88d49dfb
+      uid: a2a0899f-b361-4147-a714-89bfa1b9b5bc
+    resourceVersion: "25018"
+    uid: 68a3e1a0-5ee6-4930-8e16-7da9ddc3b885
+  spec:
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - ingress-nginx
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+    containers:
+    - args:
+      - /nginx-ingress-controller
+      - --default-backend-service=ingress-nginx/default-http-backend
+      - --configmap=ingress-nginx/nginx-configuration
+      - --tcp-services-configmap=ingress-nginx/tcp-services
+      - --udp-services-configmap=ingress-nginx/udp-services
+      - --annotations-prefix=nginx.ingress.kubernetes.io
+      - --enable-ssl-passthrough
+      - --enable-annotation-validation=true
+      - --watch-ingress-without-class=true
+      - --v=0
+      - --default-ssl-certificate=ingress-nginx/default-ingress-tls-secret
+      env:
+      - name: POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: POD_NAMESPACE
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.namespace
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: 10254
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: nginx-ingress-controller
+      ports:
+      - containerPort: 80
+        name: http
+        protocol: TCP
+      - containerPort: 443
+        name: https
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: 10254
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: "1"
+          ephemeral-storage: 2Gi
+          memory: 2Gi
+        requests:
+          cpu: 100m
+          ephemeral-storage: 512Mi
+          memory: 500Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add:
+          - NET_BIND_SERVICE
+          drop:
+          - all
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 115044
+        runAsNonRoot: true
+        runAsUser: 115044
+        seccompProfile:
+          type: RuntimeDefault
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/ingress-controller/ssl
+        name: ssl-certs
+      - mountPath: /etc/ingress-controller/auth
+        name: ingress-basic-auth
+      - mountPath: /tmp/nginx
+        name: nginx-tmp
+      - mountPath: /etc/ingress-controller/telemetry
+        name: ingress-controller-telemetry
+      - mountPath: /etc/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-lw2tz
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - cp -r /etc/nginx/* /mnt/nginx/
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imagePullPolicy: IfNotPresent
+      name: copy-nginx-config
+      resources:
+        limits:
+          cpu: 20m
+          memory: 50Mi
+        requests:
+          cpu: 10m
+          memory: 30Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - all
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 115044
+        runAsNonRoot: true
+        runAsUser: 115044
+        seccompProfile:
+          type: RuntimeDefault
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /mnt/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-lw2tz
+        readOnly: true
+    nodeName: control-plane-dc163-ccd1-master1-1001
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: ""
+    preemptionPolicy: PreemptLowerPriority
+    priority: 2000000000
+    priorityClassName: system-cluster-critical
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: nginx-ingress-serviceaccount
+    serviceAccountName: nginx-ingress-serviceaccount
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - emptyDir: {}
+      name: ssl-certs
+    - emptyDir: {}
+      name: ingress-basic-auth
+    - emptyDir: {}
+      name: nginx-tmp
+    - emptyDir: {}
+      name: ingress-controller-telemetry
+    - emptyDir: {}
+      name: nginx-config
+    - name: kube-api-access-lw2tz
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:22Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:24Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:36Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:36Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:18Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://d2c6648c83155750a0cb0b9925fce01792b06ffe73d40c1a2943671f91d80df7
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imageID: registry.eccd.local:5000/nginx-ingress-controller@sha256:1b493796f5dfbfd2e00a255b7fc32af849bc416ad45b31558540a951d1afa3ba
+      lastState: {}
+      name: nginx-ingress-controller
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-07-03T15:41:24Z"
+      user:
+        linux:
+          gid: 115044
+          supplementalGroups:
+          - 115044
+          uid: 115044
+      volumeMounts:
+      - mountPath: /etc/ingress-controller/ssl
+        name: ssl-certs
+      - mountPath: /etc/ingress-controller/auth
+        name: ingress-basic-auth
+      - mountPath: /tmp/nginx
+        name: nginx-tmp
+      - mountPath: /etc/ingress-controller/telemetry
+        name: ingress-controller-telemetry
+      - mountPath: /etc/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-lw2tz
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.0.10.103
+    hostIPs:
+    - ip: 10.0.10.103
+    - ip: fd00:2:3320:10::103
+    initContainerStatuses:
+    - containerID: containerd://a6390a3a0758b104fcd040d23b41dd88cf1e0697a49485679c0556ae83e8c0a7
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imageID: registry.eccd.local:5000/nginx-ingress-controller@sha256:1b493796f5dfbfd2e00a255b7fc32af849bc416ad45b31558540a951d1afa3ba
+      lastState: {}
+      name: copy-nginx-config
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://a6390a3a0758b104fcd040d23b41dd88cf1e0697a49485679c0556ae83e8c0a7
+          exitCode: 0
+          finishedAt: "2025-07-03T15:41:22Z"
+          reason: Completed
+          startedAt: "2025-07-03T15:41:21Z"
+      user:
+        linux:
+          gid: 115044
+          supplementalGroups:
+          - 115044
+          uid: 115044
+      volumeMounts:
+      - mountPath: /mnt/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-lw2tz
+        readOnly: true
+        recursiveReadOnly: Disabled
+    phase: Running
+    podIP: 192.168.219.139
+    podIPs:
+    - ip: 192.168.219.139
+    - ip: fd00:eccd:20:ffff:b34b:4141:fda2:6a8b
+    qosClass: Burstable
+    startTime: "2025-07-03T15:41:18Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      ccd/addon: ingress
+      cni.projectcalico.org/containerID: df617e633bcb01d4315ef2dda393519107d0303390a2ba52f4b9207a6208f0f3
+      cni.projectcalico.org/podIP: 192.168.5.142/32
+      cni.projectcalico.org/podIPs: 192.168.5.142/32,fd00:eccd:20:ffff:ca32:dbb9:cab6:b4ce/128
+      ericsson.ccd.workload.io/management: "True"
+      kyverno.io/verify-images: '{"registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf":"pass"}'
+      prometheus.io/port: "10254"
+      prometheus.io/scrape: "true"
+    creationTimestamp: "2025-07-03T15:41:18Z"
+    generateName: nginx-ingress-controller-7d88d49dfb-
+    generation: 1
+    labels:
+      app: ingress-nginx
+      ccd/addon: ingress
+      ccd/mount-service-account-token: "true"
+      pod-template-hash: 7d88d49dfb
+    name: nginx-ingress-controller-7d88d49dfb-fh9w2
+    namespace: ingress-nginx
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: nginx-ingress-controller-7d88d49dfb
+      uid: a2a0899f-b361-4147-a714-89bfa1b9b5bc
+    resourceVersion: "25031"
+    uid: 54c9ad6b-0761-4426-a326-c8ed25ce5475
+  spec:
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - ingress-nginx
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+    containers:
+    - args:
+      - /nginx-ingress-controller
+      - --default-backend-service=ingress-nginx/default-http-backend
+      - --configmap=ingress-nginx/nginx-configuration
+      - --tcp-services-configmap=ingress-nginx/tcp-services
+      - --udp-services-configmap=ingress-nginx/udp-services
+      - --annotations-prefix=nginx.ingress.kubernetes.io
+      - --enable-ssl-passthrough
+      - --enable-annotation-validation=true
+      - --watch-ingress-without-class=true
+      - --v=0
+      - --default-ssl-certificate=ingress-nginx/default-ingress-tls-secret
+      env:
+      - name: POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: POD_NAMESPACE
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.namespace
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: 10254
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: nginx-ingress-controller
+      ports:
+      - containerPort: 80
+        name: http
+        protocol: TCP
+      - containerPort: 443
+        name: https
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: 10254
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: "1"
+          ephemeral-storage: 2Gi
+          memory: 2Gi
+        requests:
+          cpu: 100m
+          ephemeral-storage: 512Mi
+          memory: 500Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add:
+          - NET_BIND_SERVICE
+          drop:
+          - all
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 115044
+        runAsNonRoot: true
+        runAsUser: 115044
+        seccompProfile:
+          type: RuntimeDefault
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/ingress-controller/ssl
+        name: ssl-certs
+      - mountPath: /etc/ingress-controller/auth
+        name: ingress-basic-auth
+      - mountPath: /tmp/nginx
+        name: nginx-tmp
+      - mountPath: /etc/ingress-controller/telemetry
+        name: ingress-controller-telemetry
+      - mountPath: /etc/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-p8m9q
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - cp -r /etc/nginx/* /mnt/nginx/
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imagePullPolicy: IfNotPresent
+      name: copy-nginx-config
+      resources:
+        limits:
+          cpu: 20m
+          memory: 50Mi
+        requests:
+          cpu: 10m
+          memory: 30Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - all
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 115044
+        runAsNonRoot: true
+        runAsUser: 115044
+        seccompProfile:
+          type: RuntimeDefault
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /mnt/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-p8m9q
+        readOnly: true
+    nodeName: control-plane-dc163-ccd1-master2-2001
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: ""
+    preemptionPolicy: PreemptLowerPriority
+    priority: 2000000000
+    priorityClassName: system-cluster-critical
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: nginx-ingress-serviceaccount
+    serviceAccountName: nginx-ingress-serviceaccount
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - emptyDir: {}
+      name: ssl-certs
+    - emptyDir: {}
+      name: ingress-basic-auth
+    - emptyDir: {}
+      name: nginx-tmp
+    - emptyDir: {}
+      name: ingress-controller-telemetry
+    - emptyDir: {}
+      name: nginx-config
+    - name: kube-api-access-p8m9q
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:22Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:24Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:36Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:36Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:18Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://eaa585471dc80a4d6ca71843cf2790a1010d9ec468d7b90abf9801b034635852
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imageID: registry.eccd.local:5000/nginx-ingress-controller@sha256:1b493796f5dfbfd2e00a255b7fc32af849bc416ad45b31558540a951d1afa3ba
+      lastState: {}
+      name: nginx-ingress-controller
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-07-03T15:41:24Z"
+      user:
+        linux:
+          gid: 115044
+          supplementalGroups:
+          - 115044
+          uid: 115044
+      volumeMounts:
+      - mountPath: /etc/ingress-controller/ssl
+        name: ssl-certs
+      - mountPath: /etc/ingress-controller/auth
+        name: ingress-basic-auth
+      - mountPath: /tmp/nginx
+        name: nginx-tmp
+      - mountPath: /etc/ingress-controller/telemetry
+        name: ingress-controller-telemetry
+      - mountPath: /etc/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-p8m9q
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.0.10.101
+    hostIPs:
+    - ip: 10.0.10.101
+    - ip: fd00:2:3320:10::101
+    initContainerStatuses:
+    - containerID: containerd://4a32f816bc535cebbdfa93e84b9a7f515c35729dd6d61b8a8e32d8b83712939d
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imageID: registry.eccd.local:5000/nginx-ingress-controller@sha256:1b493796f5dfbfd2e00a255b7fc32af849bc416ad45b31558540a951d1afa3ba
+      lastState: {}
+      name: copy-nginx-config
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://4a32f816bc535cebbdfa93e84b9a7f515c35729dd6d61b8a8e32d8b83712939d
+          exitCode: 0
+          finishedAt: "2025-07-03T15:41:22Z"
+          reason: Completed
+          startedAt: "2025-07-03T15:41:21Z"
+      user:
+        linux:
+          gid: 115044
+          supplementalGroups:
+          - 115044
+          uid: 115044
+      volumeMounts:
+      - mountPath: /mnt/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-p8m9q
+        readOnly: true
+        recursiveReadOnly: Disabled
+    phase: Running
+    podIP: 192.168.5.142
+    podIPs:
+    - ip: 192.168.5.142
+    - ip: fd00:eccd:20:ffff:ca32:dbb9:cab6:b4ce
+    qosClass: Burstable
+    startTime: "2025-07-03T15:41:18Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      ccd/addon: ingress
+      cni.projectcalico.org/containerID: 291bb44a8027bcc37b34223476c492fb2b03b1c64e7d28adaae1440c9c03ba28
+      cni.projectcalico.org/podIP: 192.168.5.141/32
+      cni.projectcalico.org/podIPs: 192.168.5.141/32,fd00:eccd:20:ffff:ca32:dbb9:cab6:b4cd/128
+      ericsson.ccd.workload.io/management: "True"
+      kyverno.io/verify-images: '{"registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf":"pass"}'
+      prometheus.io/port: "10254"
+      prometheus.io/scrape: "true"
+    creationTimestamp: "2025-07-03T15:41:18Z"
+    generateName: nginx-ingress-controller-7d88d49dfb-
+    generation: 1
+    labels:
+      app: ingress-nginx
+      ccd/addon: ingress
+      ccd/mount-service-account-token: "true"
+      pod-template-hash: 7d88d49dfb
+    name: nginx-ingress-controller-7d88d49dfb-tdl7r
+    namespace: ingress-nginx
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: nginx-ingress-controller-7d88d49dfb
+      uid: a2a0899f-b361-4147-a714-89bfa1b9b5bc
+    resourceVersion: "25025"
+    uid: 4b014073-81d6-46bc-b1fe-d60d123de6bd
+  spec:
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - ingress-nginx
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+    containers:
+    - args:
+      - /nginx-ingress-controller
+      - --default-backend-service=ingress-nginx/default-http-backend
+      - --configmap=ingress-nginx/nginx-configuration
+      - --tcp-services-configmap=ingress-nginx/tcp-services
+      - --udp-services-configmap=ingress-nginx/udp-services
+      - --annotations-prefix=nginx.ingress.kubernetes.io
+      - --enable-ssl-passthrough
+      - --enable-annotation-validation=true
+      - --watch-ingress-without-class=true
+      - --v=0
+      - --default-ssl-certificate=ingress-nginx/default-ingress-tls-secret
+      env:
+      - name: POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: POD_NAMESPACE
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.namespace
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: 10254
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: nginx-ingress-controller
+      ports:
+      - containerPort: 80
+        name: http
+        protocol: TCP
+      - containerPort: 443
+        name: https
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: 10254
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: "1"
+          ephemeral-storage: 2Gi
+          memory: 2Gi
+        requests:
+          cpu: 100m
+          ephemeral-storage: 512Mi
+          memory: 500Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add:
+          - NET_BIND_SERVICE
+          drop:
+          - all
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 115044
+        runAsNonRoot: true
+        runAsUser: 115044
+        seccompProfile:
+          type: RuntimeDefault
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/ingress-controller/ssl
+        name: ssl-certs
+      - mountPath: /etc/ingress-controller/auth
+        name: ingress-basic-auth
+      - mountPath: /tmp/nginx
+        name: nginx-tmp
+      - mountPath: /etc/ingress-controller/telemetry
+        name: ingress-controller-telemetry
+      - mountPath: /etc/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-vvp4r
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - cp -r /etc/nginx/* /mnt/nginx/
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imagePullPolicy: IfNotPresent
+      name: copy-nginx-config
+      resources:
+        limits:
+          cpu: 20m
+          memory: 50Mi
+        requests:
+          cpu: 10m
+          memory: 30Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - all
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 115044
+        runAsNonRoot: true
+        runAsUser: 115044
+        seccompProfile:
+          type: RuntimeDefault
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /mnt/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-vvp4r
+        readOnly: true
+    nodeName: control-plane-dc163-ccd1-master2-2001
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: ""
+    preemptionPolicy: PreemptLowerPriority
+    priority: 2000000000
+    priorityClassName: system-cluster-critical
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: nginx-ingress-serviceaccount
+    serviceAccountName: nginx-ingress-serviceaccount
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - emptyDir: {}
+      name: ssl-certs
+    - emptyDir: {}
+      name: ingress-basic-auth
+    - emptyDir: {}
+      name: nginx-tmp
+    - emptyDir: {}
+      name: ingress-controller-telemetry
+    - emptyDir: {}
+      name: nginx-config
+    - name: kube-api-access-vvp4r
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:22Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:24Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:36Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:36Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-03T15:41:18Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://942ee9c52bd11a1cccf3aa054b648c9ce9495571749b5bb1917025e58443b9f1
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imageID: registry.eccd.local:5000/nginx-ingress-controller@sha256:1b493796f5dfbfd2e00a255b7fc32af849bc416ad45b31558540a951d1afa3ba
+      lastState: {}
+      name: nginx-ingress-controller
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-07-03T15:41:24Z"
+      user:
+        linux:
+          gid: 115044
+          supplementalGroups:
+          - 115044
+          uid: 115044
+      volumeMounts:
+      - mountPath: /etc/ingress-controller/ssl
+        name: ssl-certs
+      - mountPath: /etc/ingress-controller/auth
+        name: ingress-basic-auth
+      - mountPath: /tmp/nginx
+        name: nginx-tmp
+      - mountPath: /etc/ingress-controller/telemetry
+        name: ingress-controller-telemetry
+      - mountPath: /etc/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-vvp4r
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.0.10.101
+    hostIPs:
+    - ip: 10.0.10.101
+    - ip: fd00:2:3320:10::101
+    initContainerStatuses:
+    - containerID: containerd://0e15a72d500321a89f905c724eb92b04f139cc5029cadd44359186d0274597aa
+      image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+      imageID: registry.eccd.local:5000/nginx-ingress-controller@sha256:1b493796f5dfbfd2e00a255b7fc32af849bc416ad45b31558540a951d1afa3ba
+      lastState: {}
+      name: copy-nginx-config
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://0e15a72d500321a89f905c724eb92b04f139cc5029cadd44359186d0274597aa
+          exitCode: 0
+          finishedAt: "2025-07-03T15:41:22Z"
+          reason: Completed
+          startedAt: "2025-07-03T15:41:21Z"
+      user:
+        linux:
+          gid: 115044
+          supplementalGroups:
+          - 115044
+          uid: 115044
+      volumeMounts:
+      - mountPath: /mnt/nginx
+        name: nginx-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-vvp4r
+        readOnly: true
+        recursiveReadOnly: Disabled
+    phase: Running
+    podIP: 192.168.5.141
+    podIPs:
+    - ip: 192.168.5.141
+    - ip: fd00:eccd:20:ffff:ca32:dbb9:cab6:b4cd
+    qosClass: Burstable
+    startTime: "2025-07-03T15:41:18Z"
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      ccd.ericsson.com/last-applied-configuration: '{"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"ccd/addon":"ingress","ericsson.ccd.workload.io/management":"True"},"labels":{"app":"default-http-backend"},"name":"default-http-backend","namespace":"ingress-nginx"},"spec":{"ports":[{"port":80,"targetPort":8080}],"selector":{"app":"default-http-backend"}}}'
+      ccd/addon: ingress
+      ericsson.ccd.workload.io/management: "True"
+    creationTimestamp: "2025-07-03T15:41:09Z"
+    labels:
+      app: default-http-backend
+    name: default-http-backend
+    namespace: ingress-nginx
+    resourceVersion: "24439"
+    uid: b45f4676-3a0c-49be-a5a3-4305803e0570
+  spec:
+    clusterIP: 10.109.158.45
+    clusterIPs:
+    - 10.109.158.45
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: default-http-backend
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      ccd.ericsson.com/last-applied-configuration: '{"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"ingress":"nginx","metallb.io/loadBalancerIPs":"10.33.61.64,2001:1B70:6288:4169::2:1","metallb.universe.tf/address-pool":"oam-pool"},"name":"ingress-nginx","namespace":"ingress-nginx"},"spec":{"allocateLoadBalancerNodePorts":true,"clusterIP":"10.97.74.168","clusterIPs":["10.97.74.168","fd00:eccd:19:ffff::5555:a0a0"],"ipFamilyPolicy":"PreferDualStack","ports":[{"name":"http","port":80,"protocol":"TCP","targetPort":80},{"name":"https","port":443,"protocol":"TCP","targetPort":443}],"selector":{"app":"ingress-nginx"},"type":"LoadBalancer"}}'
+      ingress: nginx
+      metallb.io/ip-allocated-from-pool: oam-pool
+      metallb.io/loadBalancerIPs: 10.33.61.64,2001:1B70:6288:4169::2:1
+      metallb.universe.tf/address-pool: oam-pool
+    creationTimestamp: "2025-07-03T15:41:20Z"
+    name: ingress-nginx
+    namespace: ingress-nginx
+    resourceVersion: "26256"
+    uid: edca921f-0b0b-4c13-8c9d-d0906c9bc7f2
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 10.97.74.168
+    clusterIPs:
+    - 10.97.74.168
+    - fd00:eccd:19:ffff::5555:a0a0
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    - IPv6
+    ipFamilyPolicy: PreferDualStack
+    ports:
+    - name: http
+      nodePort: 32184
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: https
+      nodePort: 31289
+      port: 443
+      protocol: TCP
+      targetPort: 443
+    selector:
+      app: ingress-nginx
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 10.33.61.64
+        ipMode: VIP
+      - ip: 2001:1b70:6288:4169::2:1
+        ipMode: VIP
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      ccd.ericsson.com/last-applied-configuration: '{"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"ccd/addon":"ingress","ericsson.ccd.workload.io/management":"True"},"labels":{"app":"default-http-backend","ccd/addon":"ingress"},"name":"default-http-backend","namespace":"ingress-nginx"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"default-http-backend"}},"template":{"metadata":{"annotations":{"ccd/addon":"ingress","ericsson.ccd.workload.io/management":"True"},"labels":{"app":"default-http-backend","ccd/addon":"ingress"}},"spec":{"automountServiceAccountToken":false,"containers":[{"image":"registry.eccd.local:5000/defaultbackend:1.5-2-b7f47fdf","livenessProbe":{"httpGet":{"path":"/healthz","port":8080,"scheme":"HTTP"},"initialDelaySeconds":30,"timeoutSeconds":5},"name":"default-http-backend","ports":[{"containerPort":8080}],"resources":{"limits":{"cpu":"20m","ephemeral-storage":"250Mi","memory":"50Mi"},"requests":{"cpu":"10m","ephemeral-storage":"50Mi","memory":"30Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["all"]},"privileged":false,"readOnlyRootFilesystem":true,"runAsGroup":115044,"runAsNonRoot":true,"runAsUser":115044,"seccompProfile":{"type":"RuntimeDefault"}},"volumeMounts":[{"mountPath":"/etc/localtime","name":"tz-config"}]}],"nodeSelector":{"node-role.kubernetes.io/control-plane":""},"priorityClassName":"system-cluster-critical","serviceAccountName":"nginx-ingress-serviceaccount","terminationGracePeriodSeconds":60,"tolerations":[{"effect":"NoSchedule","key":"node-role.kubernetes.io/control-plane"}],"volumes":[{"hostPath":{"path":"/etc/localtime"},"name":"tz-config"}]}}}}'
+      ccd/addon: ingress
+      deployment.kubernetes.io/revision: "1"
+      ericsson.ccd.workload.io/management: "True"
+    creationTimestamp: "2025-07-03T15:41:08Z"
+    generation: 1
+    labels:
+      app: default-http-backend
+      ccd/addon: ingress
+    name: default-http-backend
+    namespace: ingress-nginx
+    resourceVersion: "24489"
+    uid: c0a49b49-7a08-4d52-80a7-226617f73a49
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: default-http-backend
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          ccd/addon: ingress
+          ericsson.ccd.workload.io/management: "True"
+        creationTimestamp: null
+        labels:
+          app: default-http-backend
+          ccd/addon: ingress
+      spec:
+        automountServiceAccountToken: false
+        containers:
+        - image: registry.eccd.local:5000/defaultbackend:1.5-2-b7f47fdf
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: default-http-backend
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 20m
+              ephemeral-storage: 250Mi
+              memory: 50Mi
+            requests:
+              cpu: 10m
+              ephemeral-storage: 50Mi
+              memory: 30Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - all
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 115044
+            runAsNonRoot: true
+            runAsUser: 115044
+            seccompProfile:
+              type: RuntimeDefault
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/localtime
+            name: tz-config
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node-role.kubernetes.io/control-plane: ""
+        priorityClassName: system-cluster-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: nginx-ingress-serviceaccount
+        serviceAccountName: nginx-ingress-serviceaccount
+        terminationGracePeriodSeconds: 60
+        tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+        volumes:
+        - hostPath:
+            path: /etc/localtime
+            type: ""
+          name: tz-config
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-07-03T15:41:13Z"
+      lastUpdateTime: "2025-07-03T15:41:13Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-07-03T15:41:08Z"
+      lastUpdateTime: "2025-07-03T15:41:13Z"
+      message: ReplicaSet "default-http-backend-66f4bc964c" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      ccd.ericsson.com/last-applied-configuration: '{"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"ccd/addon":"ingress","ericsson.ccd.workload.io/management":"True"},"labels":{"app":"ingress-nginx","ccd/addon":"ingress","container.kubeaudit.io/nginx-ingress-controller.allow-capability-net-bind-service":"NeedsNetBindServiceForIngressNginxCtrl"},"name":"nginx-ingress-controller","namespace":"ingress-nginx"},"spec":{"replicas":4,"selector":{"matchLabels":{"app":"ingress-nginx"}},"template":{"metadata":{"annotations":{"ccd/addon":"ingress","ericsson.ccd.workload.io/management":"True","prometheus.io/port":"10254","prometheus.io/scrape":"true"},"labels":{"app":"ingress-nginx","ccd/addon":"ingress","ccd/mount-service-account-token":"true"}},"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["ingress-nginx"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"containers":[{"args":["/nginx-ingress-controller","--default-backend-service=ingress-nginx/default-http-backend","--configmap=ingress-nginx/nginx-configuration","--tcp-services-configmap=ingress-nginx/tcp-services","--udp-services-configmap=ingress-nginx/udp-services","--annotations-prefix=nginx.ingress.kubernetes.io","--enable-ssl-passthrough","--enable-annotation-validation=true","--watch-ingress-without-class=true","--v=0","--default-ssl-certificate=ingress-nginx/default-ingress-tls-secret"],"env":[{"name":"POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"POD_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}}],"image":"registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf","livenessProbe":{"failureThreshold":3,"httpGet":{"path":"/healthz","port":10254,"scheme":"HTTP"},"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1},"name":"nginx-ingress-controller","ports":[{"containerPort":80,"name":"http"},{"containerPort":443,"name":"https"}],"readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/healthz","port":10254,"scheme":"HTTP"},"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1},"resources":{"limits":{"cpu":1,"ephemeral-storage":"2Gi","memory":"2Gi"},"requests":{"cpu":"100m","ephemeral-storage":"512Mi","memory":"500Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"add":["NET_BIND_SERVICE"],"drop":["all"]},"privileged":false,"readOnlyRootFilesystem":true,"runAsGroup":115044,"runAsNonRoot":true,"runAsUser":115044,"seccompProfile":{"type":"RuntimeDefault"}},"volumeMounts":[{"mountPath":"/etc/ingress-controller/ssl","name":"ssl-certs"},{"mountPath":"/etc/ingress-controller/auth","name":"ingress-basic-auth"},{"mountPath":"/tmp/nginx","name":"nginx-tmp"},{"mountPath":"/etc/ingress-controller/telemetry","name":"ingress-controller-telemetry"},{"mountPath":"/etc/nginx","name":"nginx-config"}]}],"initContainers":[{"command":["sh","-c","cp
+        -r /etc/nginx/* /mnt/nginx/"],"image":"registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf","name":"copy-nginx-config","resources":{"limits":{"cpu":"20m","memory":"50Mi"},"requests":{"cpu":"10m","memory":"30Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["all"]},"privileged":false,"readOnlyRootFilesystem":true,"runAsGroup":115044,"runAsNonRoot":true,"runAsUser":115044,"seccompProfile":{"type":"RuntimeDefault"}},"volumeMounts":[{"mountPath":"/mnt/nginx","name":"nginx-config"}]}],"nodeSelector":{"node-role.kubernetes.io/control-plane":""},"priorityClassName":"system-cluster-critical","serviceAccountName":"nginx-ingress-serviceaccount","tolerations":[{"effect":"NoSchedule","key":"node-role.kubernetes.io/control-plane"}],"volumes":[{"emptyDir":{},"name":"ssl-certs"},{"emptyDir":{},"name":"ingress-basic-auth"},{"emptyDir":{},"name":"nginx-tmp"},{"emptyDir":{},"name":"ingress-controller-telemetry"},{"emptyDir":{},"name":"nginx-config"}]}}}}'
+      ccd/addon: ingress
+      deployment.kubernetes.io/revision: "1"
+      ericsson.ccd.workload.io/management: "True"
+    creationTimestamp: "2025-07-03T15:41:18Z"
+    generation: 1
+    labels:
+      app: ingress-nginx
+      ccd/addon: ingress
+      container.kubeaudit.io/nginx-ingress-controller.allow-capability-net-bind-service: NeedsNetBindServiceForIngressNginxCtrl
+    name: nginx-ingress-controller
+    namespace: ingress-nginx
+    resourceVersion: "25038"
+    uid: c7db012c-b105-48b5-b778-90378d5a6462
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 4
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: ingress-nginx
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          ccd/addon: ingress
+          ericsson.ccd.workload.io/management: "True"
+          prometheus.io/port: "10254"
+          prometheus.io/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app: ingress-nginx
+          ccd/addon: ingress
+          ccd/mount-service-account-token: "true"
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - ingress-nginx
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        containers:
+        - args:
+          - /nginx-ingress-controller
+          - --default-backend-service=ingress-nginx/default-http-backend
+          - --configmap=ingress-nginx/nginx-configuration
+          - --tcp-services-configmap=ingress-nginx/tcp-services
+          - --udp-services-configmap=ingress-nginx/udp-services
+          - --annotations-prefix=nginx.ingress.kubernetes.io
+          - --enable-ssl-passthrough
+          - --enable-annotation-validation=true
+          - --watch-ingress-without-class=true
+          - --v=0
+          - --default-ssl-certificate=ingress-nginx/default-ingress-tls-secret
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: nginx-ingress-controller
+          ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "1"
+              ephemeral-storage: 2Gi
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              ephemeral-storage: 512Mi
+              memory: 500Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+              - NET_BIND_SERVICE
+              drop:
+              - all
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 115044
+            runAsNonRoot: true
+            runAsUser: 115044
+            seccompProfile:
+              type: RuntimeDefault
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/ingress-controller/ssl
+            name: ssl-certs
+          - mountPath: /etc/ingress-controller/auth
+            name: ingress-basic-auth
+          - mountPath: /tmp/nginx
+            name: nginx-tmp
+          - mountPath: /etc/ingress-controller/telemetry
+            name: ingress-controller-telemetry
+          - mountPath: /etc/nginx
+            name: nginx-config
+        dnsPolicy: ClusterFirst
+        initContainers:
+        - command:
+          - sh
+          - -c
+          - cp -r /etc/nginx/* /mnt/nginx/
+          image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+          imagePullPolicy: IfNotPresent
+          name: copy-nginx-config
+          resources:
+            limits:
+              cpu: 20m
+              memory: 50Mi
+            requests:
+              cpu: 10m
+              memory: 30Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - all
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 115044
+            runAsNonRoot: true
+            runAsUser: 115044
+            seccompProfile:
+              type: RuntimeDefault
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /mnt/nginx
+            name: nginx-config
+        nodeSelector:
+          node-role.kubernetes.io/control-plane: ""
+        priorityClassName: system-cluster-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: nginx-ingress-serviceaccount
+        serviceAccountName: nginx-ingress-serviceaccount
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+        volumes:
+        - emptyDir: {}
+          name: ssl-certs
+        - emptyDir: {}
+          name: ingress-basic-auth
+        - emptyDir: {}
+          name: nginx-tmp
+        - emptyDir: {}
+          name: ingress-controller-telemetry
+        - emptyDir: {}
+          name: nginx-config
+  status:
+    availableReplicas: 4
+    conditions:
+    - lastTransitionTime: "2025-07-03T15:41:36Z"
+      lastUpdateTime: "2025-07-03T15:41:36Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-07-03T15:41:18Z"
+      lastUpdateTime: "2025-07-03T15:41:36Z"
+      message: ReplicaSet "nginx-ingress-controller-7d88d49dfb" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 4
+    replicas: 4
+    updatedReplicas: 4
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      ccd.ericsson.com/last-applied-configuration: '{"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"ccd/addon":"ingress","ericsson.ccd.workload.io/management":"True"},"labels":{"app":"default-http-backend","ccd/addon":"ingress"},"name":"default-http-backend","namespace":"ingress-nginx"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"default-http-backend"}},"template":{"metadata":{"annotations":{"ccd/addon":"ingress","ericsson.ccd.workload.io/management":"True"},"labels":{"app":"default-http-backend","ccd/addon":"ingress"}},"spec":{"automountServiceAccountToken":false,"containers":[{"image":"registry.eccd.local:5000/defaultbackend:1.5-2-b7f47fdf","livenessProbe":{"httpGet":{"path":"/healthz","port":8080,"scheme":"HTTP"},"initialDelaySeconds":30,"timeoutSeconds":5},"name":"default-http-backend","ports":[{"containerPort":8080}],"resources":{"limits":{"cpu":"20m","ephemeral-storage":"250Mi","memory":"50Mi"},"requests":{"cpu":"10m","ephemeral-storage":"50Mi","memory":"30Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["all"]},"privileged":false,"readOnlyRootFilesystem":true,"runAsGroup":115044,"runAsNonRoot":true,"runAsUser":115044,"seccompProfile":{"type":"RuntimeDefault"}},"volumeMounts":[{"mountPath":"/etc/localtime","name":"tz-config"}]}],"nodeSelector":{"node-role.kubernetes.io/control-plane":""},"priorityClassName":"system-cluster-critical","serviceAccountName":"nginx-ingress-serviceaccount","terminationGracePeriodSeconds":60,"tolerations":[{"effect":"NoSchedule","key":"node-role.kubernetes.io/control-plane"}],"volumes":[{"hostPath":{"path":"/etc/localtime"},"name":"tz-config"}]}}}}'
+      ccd/addon: ingress
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+      ericsson.ccd.workload.io/management: "True"
+    creationTimestamp: "2025-07-03T15:41:08Z"
+    generation: 1
+    labels:
+      app: default-http-backend
+      ccd/addon: ingress
+      pod-template-hash: 66f4bc964c
+    name: default-http-backend-66f4bc964c
+    namespace: ingress-nginx
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: default-http-backend
+      uid: c0a49b49-7a08-4d52-80a7-226617f73a49
+    resourceVersion: "24488"
+    uid: 0bb56bcd-dcf3-4511-b45c-d4756b6d84d0
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: default-http-backend
+        pod-template-hash: 66f4bc964c
+    template:
+      metadata:
+        annotations:
+          ccd/addon: ingress
+          ericsson.ccd.workload.io/management: "True"
+        creationTimestamp: null
+        labels:
+          app: default-http-backend
+          ccd/addon: ingress
+          pod-template-hash: 66f4bc964c
+      spec:
+        automountServiceAccountToken: false
+        containers:
+        - image: registry.eccd.local:5000/defaultbackend:1.5-2-b7f47fdf
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: default-http-backend
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 20m
+              ephemeral-storage: 250Mi
+              memory: 50Mi
+            requests:
+              cpu: 10m
+              ephemeral-storage: 50Mi
+              memory: 30Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - all
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 115044
+            runAsNonRoot: true
+            runAsUser: 115044
+            seccompProfile:
+              type: RuntimeDefault
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/localtime
+            name: tz-config
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node-role.kubernetes.io/control-plane: ""
+        priorityClassName: system-cluster-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: nginx-ingress-serviceaccount
+        serviceAccountName: nginx-ingress-serviceaccount
+        terminationGracePeriodSeconds: 60
+        tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+        volumes:
+        - hostPath:
+            path: /etc/localtime
+            type: ""
+          name: tz-config
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      ccd.ericsson.com/last-applied-configuration: '{"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"ccd/addon":"ingress","ericsson.ccd.workload.io/management":"True"},"labels":{"app":"ingress-nginx","ccd/addon":"ingress","container.kubeaudit.io/nginx-ingress-controller.allow-capability-net-bind-service":"NeedsNetBindServiceForIngressNginxCtrl"},"name":"nginx-ingress-controller","namespace":"ingress-nginx"},"spec":{"replicas":4,"selector":{"matchLabels":{"app":"ingress-nginx"}},"template":{"metadata":{"annotations":{"ccd/addon":"ingress","ericsson.ccd.workload.io/management":"True","prometheus.io/port":"10254","prometheus.io/scrape":"true"},"labels":{"app":"ingress-nginx","ccd/addon":"ingress","ccd/mount-service-account-token":"true"}},"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["ingress-nginx"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"containers":[{"args":["/nginx-ingress-controller","--default-backend-service=ingress-nginx/default-http-backend","--configmap=ingress-nginx/nginx-configuration","--tcp-services-configmap=ingress-nginx/tcp-services","--udp-services-configmap=ingress-nginx/udp-services","--annotations-prefix=nginx.ingress.kubernetes.io","--enable-ssl-passthrough","--enable-annotation-validation=true","--watch-ingress-without-class=true","--v=0","--default-ssl-certificate=ingress-nginx/default-ingress-tls-secret"],"env":[{"name":"POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"POD_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}}],"image":"registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf","livenessProbe":{"failureThreshold":3,"httpGet":{"path":"/healthz","port":10254,"scheme":"HTTP"},"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1},"name":"nginx-ingress-controller","ports":[{"containerPort":80,"name":"http"},{"containerPort":443,"name":"https"}],"readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/healthz","port":10254,"scheme":"HTTP"},"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1},"resources":{"limits":{"cpu":1,"ephemeral-storage":"2Gi","memory":"2Gi"},"requests":{"cpu":"100m","ephemeral-storage":"512Mi","memory":"500Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"add":["NET_BIND_SERVICE"],"drop":["all"]},"privileged":false,"readOnlyRootFilesystem":true,"runAsGroup":115044,"runAsNonRoot":true,"runAsUser":115044,"seccompProfile":{"type":"RuntimeDefault"}},"volumeMounts":[{"mountPath":"/etc/ingress-controller/ssl","name":"ssl-certs"},{"mountPath":"/etc/ingress-controller/auth","name":"ingress-basic-auth"},{"mountPath":"/tmp/nginx","name":"nginx-tmp"},{"mountPath":"/etc/ingress-controller/telemetry","name":"ingress-controller-telemetry"},{"mountPath":"/etc/nginx","name":"nginx-config"}]}],"initContainers":[{"command":["sh","-c","cp
+        -r /etc/nginx/* /mnt/nginx/"],"image":"registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf","name":"copy-nginx-config","resources":{"limits":{"cpu":"20m","memory":"50Mi"},"requests":{"cpu":"10m","memory":"30Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["all"]},"privileged":false,"readOnlyRootFilesystem":true,"runAsGroup":115044,"runAsNonRoot":true,"runAsUser":115044,"seccompProfile":{"type":"RuntimeDefault"}},"volumeMounts":[{"mountPath":"/mnt/nginx","name":"nginx-config"}]}],"nodeSelector":{"node-role.kubernetes.io/control-plane":""},"priorityClassName":"system-cluster-critical","serviceAccountName":"nginx-ingress-serviceaccount","tolerations":[{"effect":"NoSchedule","key":"node-role.kubernetes.io/control-plane"}],"volumes":[{"emptyDir":{},"name":"ssl-certs"},{"emptyDir":{},"name":"ingress-basic-auth"},{"emptyDir":{},"name":"nginx-tmp"},{"emptyDir":{},"name":"ingress-controller-telemetry"},{"emptyDir":{},"name":"nginx-config"}]}}}}'
+      ccd/addon: ingress
+      deployment.kubernetes.io/desired-replicas: "4"
+      deployment.kubernetes.io/max-replicas: "5"
+      deployment.kubernetes.io/revision: "1"
+      ericsson.ccd.workload.io/management: "True"
+    creationTimestamp: "2025-07-03T15:41:18Z"
+    generation: 1
+    labels:
+      app: ingress-nginx
+      ccd/addon: ingress
+      ccd/mount-service-account-token: "true"
+      pod-template-hash: 7d88d49dfb
+    name: nginx-ingress-controller-7d88d49dfb
+    namespace: ingress-nginx
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: nginx-ingress-controller
+      uid: c7db012c-b105-48b5-b778-90378d5a6462
+    resourceVersion: "25036"
+    uid: a2a0899f-b361-4147-a714-89bfa1b9b5bc
+  spec:
+    replicas: 4
+    selector:
+      matchLabels:
+        app: ingress-nginx
+        pod-template-hash: 7d88d49dfb
+    template:
+      metadata:
+        annotations:
+          ccd/addon: ingress
+          ericsson.ccd.workload.io/management: "True"
+          prometheus.io/port: "10254"
+          prometheus.io/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app: ingress-nginx
+          ccd/addon: ingress
+          ccd/mount-service-account-token: "true"
+          pod-template-hash: 7d88d49dfb
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - ingress-nginx
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        containers:
+        - args:
+          - /nginx-ingress-controller
+          - --default-backend-service=ingress-nginx/default-http-backend
+          - --configmap=ingress-nginx/nginx-configuration
+          - --tcp-services-configmap=ingress-nginx/tcp-services
+          - --udp-services-configmap=ingress-nginx/udp-services
+          - --annotations-prefix=nginx.ingress.kubernetes.io
+          - --enable-ssl-passthrough
+          - --enable-annotation-validation=true
+          - --watch-ingress-without-class=true
+          - --v=0
+          - --default-ssl-certificate=ingress-nginx/default-ingress-tls-secret
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: nginx-ingress-controller
+          ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "1"
+              ephemeral-storage: 2Gi
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              ephemeral-storage: 512Mi
+              memory: 500Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+              - NET_BIND_SERVICE
+              drop:
+              - all
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 115044
+            runAsNonRoot: true
+            runAsUser: 115044
+            seccompProfile:
+              type: RuntimeDefault
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/ingress-controller/ssl
+            name: ssl-certs
+          - mountPath: /etc/ingress-controller/auth
+            name: ingress-basic-auth
+          - mountPath: /tmp/nginx
+            name: nginx-tmp
+          - mountPath: /etc/ingress-controller/telemetry
+            name: ingress-controller-telemetry
+          - mountPath: /etc/nginx
+            name: nginx-config
+        dnsPolicy: ClusterFirst
+        initContainers:
+        - command:
+          - sh
+          - -c
+          - cp -r /etc/nginx/* /mnt/nginx/
+          image: registry.eccd.local:5000/nginx-ingress-controller:v1.12.2-b7f47fdf
+          imagePullPolicy: IfNotPresent
+          name: copy-nginx-config
+          resources:
+            limits:
+              cpu: 20m
+              memory: 50Mi
+            requests:
+              cpu: 10m
+              memory: 30Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - all
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 115044
+            runAsNonRoot: true
+            runAsUser: 115044
+            seccompProfile:
+              type: RuntimeDefault
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /mnt/nginx
+            name: nginx-config
+        nodeSelector:
+          node-role.kubernetes.io/control-plane: ""
+        priorityClassName: system-cluster-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: nginx-ingress-serviceaccount
+        serviceAccountName: nginx-ingress-serviceaccount
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+        volumes:
+        - emptyDir: {}
+          name: ssl-certs
+        - emptyDir: {}
+          name: ingress-basic-auth
+        - emptyDir: {}
+          name: nginx-tmp
+        - emptyDir: {}
+          name: ingress-controller-telemetry
+        - emptyDir: {}
+          name: nginx-config
+  status:
+    availableReplicas: 4
+    fullyLabeledReplicas: 4
+    observedGeneration: 1
+    readyReplicas: 4
+    replicas: 4
+kind: List
+metadata:
+  resourceVersion: ""

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress-controller
+  namespace: {{ namespace }}
+  labels:
+    app: ingress-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ingress-nginx
+  template:
+    metadata:
+      labels:
+        app: ingress-nginx
+    spec:
+      serviceAccountName: nginx-ingress-serviceaccount
+      containers:
+        - name: nginx-ingress-controller
+          image: k8s.gcr.io/ingress-nginx/controller:v1.2.0
+          args:
+            - /nginx-ingress-controller
+            - --default-backend-service={{ namespace }}/default-http-backend
+            - --configmap={{ namespace }}/nginx-configuration
+            - --tcp-services-configmap={{ namespace }}/tcp-services
+            - --udp-services-configmap={{ namespace }}/udp-services
+            - --publish-service={{ namespace }}/ingress-nginx
+            - --annotations-prefix=nginx.ingress.kubernetes.io
+            - --default-ssl-certificate={{ namespace }}/default-ingress-tls-secret
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - NET_BIND_SERVICE
+            runAsNonRoot: true
+            runAsUser: 101 # www-data user
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
