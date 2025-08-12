@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agent-config-{{ agent_id }}
+  namespace: {{ namespace }}
+data:
+  agent.conf: |
+      [agent]
+      version = "2.4"
+      api_versions = "default"
+      uuid = "{{ agent_uuid }}"
+      ip = "0.0.0.0"
+      port = 9002
+      contact_ip = "0.0.0.0"
+      contact_port = 9002
+      registrar_ip = "{{ registrar_fqdn }}"
+      registrar_port = 8890
+
+      enable_agent_mtls = true
+      keylime_dir = "/var/lib/keylime"
+      server_cert = "/etc/keylime/tls/server-cert.crt"
+      server_key = "/etc/keylime/tls/server-private.pem"
+      trusted_client_ca = "/etc/keylime/tls/ca.crt"
+      secure_size = "2m"
+
+      enable_ima = false
+      secure_mount = false
+      enable_mb = true
+
+      extract_payload_zip = true
+      enable_revocation_notifications = false
+      revocation_notification_ip = "registrar.{{ namespace }}"
+      revocation_notification_port = 8992
+      revocation_cert = "default"
+      revocation_actions_dir = "/usr/libexec/keylime"
+
+      enc_keyname = "derived_tci_key"
+      dec_payload_file = "decrypted_payload"
+      allow_payload_revocation_actions = true
+      tpm_hash_alg = "sha256"
+      tpm_encryption_alg = "rsa"
+      tpm_signing_alg = "rsassa"
+      ek_handle = "generate"
+      agent_data_path = "default"
+      ima_ml_path = "default"
+      measuredboot_ml_path = "default"
+      run_as = "keylime:tss"

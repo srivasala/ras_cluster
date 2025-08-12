@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keylime-agents-ingress
+  namespace: {{ namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/limit-connections: "10"
+    nginx.ingress.kubernetes.io/limit-rps: "15"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    {% if load_balancer_ip %}
+    nginx.ingress.kubernetes.io/whitelist-source-range: "{{ load_balancer_ip }}/32"
+    {% endif %}
+spec:
+  ingressClassName: nginx # Ensure this Ingress is handled by the Nginx Ingress Controller
+  # To restrict reachability to only from an ingress controller in the 'ras-lb' namespace,
+  # consider implementing Kubernetes NetworkPolicies or specific Nginx Ingress annotations
+  # like 'nginx.ingress.kubernetes.io/whitelist-source-range' with the IP range of the 'ras-lb' controller.
+  rules:
+  {% for agent in agents %}
+  - host: "agent-{{ agent.id }}.{{ ingress_host_suffix }}"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: agent-{{ agent.id }}-service
+            port:
+              number: 9002
+  {% endfor %}

@@ -1,0 +1,68 @@
+
+# MetalLB controller
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: metallb-system
+  name: controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metallb
+      component: controller
+  template:
+    metadata:
+      labels:
+        app: metallb
+        component: controller
+    spec:
+      containers:
+      - name: controller
+        image: quay.io/metallb/controller:v0.14.3
+        args:
+        - --port=7472
+        - --config=metallb.io/config
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+
+---
+# MetalLB speaker
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  namespace: metallb-system
+  name: speaker
+spec:
+  selector:
+    matchLabels:
+      app: metallb
+      component: speaker
+  template:
+    metadata:
+      labels:
+        app: metallb
+        component: speaker
+    spec:
+      hostNetwork: true
+      containers:
+      - name: speaker
+        image: quay.io/metallb/speaker:v0.14.3
+        args:
+        - --port=7472
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN", "NET_RAW"]
+
