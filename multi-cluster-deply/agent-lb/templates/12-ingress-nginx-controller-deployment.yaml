@@ -28,6 +28,8 @@ spec:
             - --publish-service={{ namespace }}/ingress-nginx
             - --annotations-prefix=nginx.ingress.kubernetes.io
             - --default-ssl-certificate={{ namespace }}/default-ingress-tls-secret
+            - --watch-namespace=""
+            - --watch-ingress-without-class=true
           ports:
             - name: http
               containerPort: 80
