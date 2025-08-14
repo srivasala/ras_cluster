@@ -75,7 +75,9 @@ echo -e "${BLUE}--------------------------------------------------${NC}"
 info "Namespace: $NAMESPACE"
 echo -e "${BLUE}--------------------------------------------------${NC}"
 
-# --- Deployment Logic ---
+kubectl create namespace "$NAMESPACE"
+
+
 MANIFEST_DIR="templates"
 if [ ! -d "$MANIFEST_DIR" ]; then
     error "Manifest directory '$MANIFEST_DIR' not found."

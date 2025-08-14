@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: ingress-nginx
   namespace: {{ namespace }}
+  annotations:
+    metallb.universe.tf/address-pool: default-address-pool     # Optional: match your pool name
+    metallb.universe.tf/allow-shared-ip: "ingress-nginx"       # If allowing IP sharing
 spec:
   type: LoadBalancer
   ports:
