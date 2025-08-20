@@ -18,8 +18,8 @@ data:
 
       enable_agent_mtls = true
       keylime_dir = "/var/lib/keylime"
-      server_cert = "/etc/keylime/tls/server-cert.crt"
-      server_key = "/etc/keylime/tls/server-private.pem"
+      server_cert = "/etc/keylime/tls/tls.crt"
+      server_key = "/etc/keylime/tls/tls.key"
       trusted_client_ca = "/etc/keylime/tls/ca.crt"
       secure_size = "2m"
 

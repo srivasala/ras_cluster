@@ -32,10 +32,22 @@ spec:
           # Initialize TPM
           export TPM2TOOLS_TCTI="swtpm:host=127.0.0.1,port=2321" && \
           tpm2_startup -c && touch /tmp/mytpm1/tpm-initialized && echo "tpm2 startup succeeded"
-          sleep 3600  # Keep container running for exec/debug
+          # --- Monitor Loop for Agent Error Signal ---
+          while true; do
+              echo "Running Context Flush..."
+              tpm2_flushcontext --transient-object --loaded-session --saved-session
+              if [ -f /tmp/error-signal/flush_needed ]; then
+                cat /tmp/error-signal/flush_needed
+                rm -f /tmp/error-signal/flush_needed
+              fi
+              sleep 30
+          done
+
       volumeMounts:
         - name: tpm-state
           mountPath: /tmp/mytpm1
+        - name: error-signal
+          mountPath: /tmp/error-signal
   
     - name: agent
       image: quay.io/keylime/keylime_agent
@@ -49,8 +61,19 @@ spec:
             echo "Waiting for TPM initialization...";
             sleep 2;
           done
-          keylime_agent
-          sleep 300 # to provide a timewindow for debugging post exit/failure
+          keylime_agent  2>&1 | tee /tmp/error-signal/agent.log &
+          AGENT_PID=$!
+          sleep 10
+
+          # Simple monitor to detect TPM2_RC_OBJECT_MEMORY in logs
+          while kill -0 $AGENT_PID 2>/dev/null; do
+           if [ -f /tmp/error-signal/agent.log ] && grep -q "TPM2_RC_OBJECT_MEMORY" /tmp/error-signal/agent.log; then
+             echo "tpm flush needed" > /tmp/error-signal/flush_needed
+           fi
+           sleep 5
+          done
+
+          wait $AGENT_PID
       readinessProbe:
         exec:
           command: ["test", "-f", "/tmp/mytpm1/tpm-initialized"]
@@ -70,6 +93,8 @@ spec:
       ports:
       - containerPort: 9002
       volumeMounts:
+      - name: error-signal
+        mountPath: /tmp/error-signal
       - name: tpm-state
         mountPath: /tmp/mytpm1
       - name: agent-config
@@ -99,3 +124,5 @@ spec:
   - name: keylime-data
     emptyDir:
       medium: Memory
+  - name: error-signal
+    emptyDir: {}
