@@ -12,6 +12,7 @@ usage() {
     echo "  --namespace <ns>           Specify the namespace to deploy to. If it doesn't exist, it will be created."
     echo "  --replicas <number>        Specify the number of agent pods to deploy. Defaults to 1."
     echo "  --lb-ip <ip>    Optional: Specify the IP address of the load balancer to restrict Ingress access."
+    echo "  --registrar-fqdn <fqdn>    Specify the FQDN of the Keylime Registrar. Defaults to 'registrar.<namespace>'."
     echo "  -h, --help                 Show this help message."
     exit 0
 }
@@ -20,6 +21,7 @@ usage() {
 NAMESPACE=""
 REPLICAS=1
 LOAD_BALANCER_IP=""
+REGISTRAR_FQDN=""
 
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -36,6 +38,10 @@ while [[ $# -gt 0 ]]; do
         LOAD_BALANCER_IP="$2"
         shift 2
         ;;
+    --registrar-fqdn)
+        REGISTRAR_FQDN="$2"
+        shift 2
+        ;;
     -h | --help)
         usage
         ;;
@@ -49,6 +55,11 @@ done
 if [ -z "$NAMESPACE" ]; then
     echo "Error: --namespace is a required argument."
     usage
+fi
+
+# Set default for REGISTRAR_FQDN if not provided
+if [ -z "$REGISTRAR_FQDN" ]; then
+    REGISTRAR_FQDN="registrar.$NAMESPACE"
 fi
 
 # --- Prerequisites Check ---
@@ -84,6 +95,7 @@ echo " Mock Keylime Agent Cluster Deployment"
 echo "--------------------------------------------------"
 echo "Namespace: $NAMESPACE"
 echo "Replicas: $REPLICAS"
+echo "Registrar FQDN: $REGISTRAR_FQDN"
 echo "--------------------------------------------------"
 
 # --- 1. Apply Namespace ---
@@ -138,7 +150,7 @@ apply_manifests() {
             "namespace" "$NAMESPACE" \
             "agent_id" "$AGENT_ID" \
             "agent_uuid" "$AGENT_UUID" \
-            "registrar_fqdn" "registrar.$NAMESPACE" \
+            "registrar_fqdn" "$REGISTRAR_FQDN" \
             > "$RENDERED_DIR/05-agent-$AGENT_ID-config.yaml"
 
         # Render Deployment (Pod)
