@@ -91,39 +91,15 @@ echo ">>> Applying namespace..."
 ./render_template.py "templates/01-namespace.yaml" "namespace" "$NAMESPACE" | kubectl apply -f -
 echo "--------------------------------------------------"
 
-# --- 2. Generate TLS Secrets ---
-generate_tls_secrets() {
-    echo ">>> Generating TLS secrets..."
-    if kubectl get secret agent-tls -n "$NAMESPACE" &> /dev/null; then
-        echo ">>> TLS secret 'agent-tls' already exists. Skipping generation."
-        echo "--------------------------------------------------"
-        return
-    fi
+# --- 2. Generate TLS Assets ---
+CERT_DIR="temp_certs"
+rm -rf "$CERT_DIR"
+mkdir -p "$CERT_DIR"
 
-    CERT_DIR="temp_certs"
-    rm -rf "$CERT_DIR"
-    mkdir -p "$CERT_DIR"
-
-    # Generate CA
-    openssl genrsa -out "$CERT_DIR/ca.key" 2048
-    openssl req -x509 -new -nodes -key "$CERT_DIR/ca.key" -sha256 -days 365 -out "$CERT_DIR/ca.crt" -subj "/CN=Mock-Agent-CA"
-
-    # Generate Server Certificate
-    openssl genrsa -out "$CERT_DIR/agent.key" 2048
-    openssl req -new -key "$CERT_DIR/agent.key" -out "$CERT_DIR/agent.csr" -subj "/CN=agent"
-    openssl x509 -req -in "$CERT_DIR/agent.csr" -CA "$CERT_DIR/ca.crt" -CAkey "$CERT_DIR/ca.key" -CAcreateserial -out "$CERT_DIR/agent.crt" -days 365 -sha256
-
-    # Create Kubernetes Secret
-    kubectl create secret generic agent-tls \
-      --from-file=tls.crt="$CERT_DIR/agent.crt" \
-      --from-file=tls.key="$CERT_DIR/agent.key" \
-      --from-file=ca.crt="$CERT_DIR/ca.crt" \
-      -n "$NAMESPACE"
-
-    rm -rf "$CERT_DIR"
-    echo ">>> TLS secrets generated successfully."
-    echo "--------------------------------------------------"
-}
+echo ">>> Generating CA..."
+openssl genrsa -out "$CERT_DIR/ca.key" 2048
+openssl req -x509 -new -nodes -key "$CERT_DIR/ca.key" -sha256 -days 365 -out "$CERT_DIR/ca.crt" -subj "/CN=Mock-Agent-CA"
+echo "--------------------------------------------------"
 
 # --- 3. Apply Manifests ---
 apply_manifests() {
@@ -142,6 +118,19 @@ apply_manifests() {
         AGENT_UUID_HEX=$(echo -n "$AGENT_UUID" | xxd -p | tr -d '\n')
         AGENT_ID=$i
         
+        echo "--> Generating TLS certificate for Agent $AGENT_ID"
+        # Generate Server Certificate
+        openssl genrsa -out "$CERT_DIR/agent-$AGENT_ID.key" 2048
+        openssl req -new -key "$CERT_DIR/agent-$AGENT_ID.key" -out "$CERT_DIR/agent-$AGENT_ID.csr" -subj "/CN=agent-$AGENT_ID"
+        openssl x509 -req -in "$CERT_DIR/agent-$AGENT_ID.csr" -CA "$CERT_DIR/ca.crt" -CAkey "$CERT_DIR/ca.key" -CAcreateserial -out "$CERT_DIR/agent-$AGENT_ID.crt" -days 365 -sha256
+
+        # Create Kubernetes Secret
+        kubectl create secret generic "agent-$AGENT_ID-tls" \
+          --from-file=tls.crt="$CERT_DIR/agent-$AGENT_ID.crt" \
+          --from-file=tls.key="$CERT_DIR/agent-$AGENT_ID.key" \
+          --from-file=ca.crt="$CERT_DIR/ca.crt" \
+          -n "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
+
         echo "--> Rendering manifests for Agent $AGENT_ID (UUID: $AGENT_UUID)"
 
         # Render ConfigMap
@@ -158,21 +147,25 @@ apply_manifests() {
             "agent_id" "$AGENT_ID" \
             > "$RENDERED_DIR/12-agent-$AGENT_ID-deployment.yaml"
 
-        # Render Service
-        ./render_template.py "templates/17-agent-service.yaml" \
-            "namespace" "$NAMESPACE" \
-            "agent_id" "$AGENT_ID" \
-            > "$RENDERED_DIR/17-agent-$AGENT_ID-service.yaml"
+        
         
         AGENTS+=("{\"id\": \"$AGENT_ID\", \"uuid_hex\": \"$AGENT_UUID_HEX\"}")
         AGENT_UUID_HEX_LIST+=("$AGENT_UUID_HEX")
     done
 
-    # Render Ingress
-    echo "--> Rendering Ingress..."
+    # Render Service for all agents
+    echo "--> Rendering Service for all agents..."
+    ./render_template.py "templates/17-agent-service.yaml" \
+        "namespace" "$NAMESPACE" \
+        > "$RENDERED_DIR/17-keylime-agent-service.yaml"
     # Convert bash array to comma-separated string for python script
     AGENT_LIST_JSON=$(printf '[%s]' "$(IFS=,; echo "${AGENTS[*]}")")
-    ./render_template.py "templates/16-ingress.yaml"         "namespace" "$NAMESPACE"         "agents" "$AGENT_LIST_JSON"         "ingress_host_suffix" "$INGRESS_HOST_SUFFIX"         "load_balancer_ip" "$LOAD_BALANCER_IP"         > "$RENDERED_DIR/16-ingress.yaml"
+    ./render_template.py "templates/16-ingress.yaml" \
+        "namespace" "$NAMESPACE" \
+        "agents" "$AGENT_LIST_JSON" \
+        "ingress_host_suffix" "$INGRESS_HOST_SUFFIX" \
+        "load_balancer_ip" "$LOAD_BALANCER_IP" \
+        > "$RENDERED_DIR/16-ingress.yaml"
 
     echo "--------------------------------------------------"
     echo ">>> Applying all rendered manifests from '$RENDERED_DIR'..."
@@ -186,8 +179,10 @@ apply_manifests() {
 }
 
 # --- Main Execution ---
-generate_tls_secrets
 apply_manifests
+
+# --- Cleanup ---
+rm -rf "$CERT_DIR"
 
 echo "--------------------------------------------------"
 echo ">>> Deployment to namespace '$NAMESPACE' completed successfully!"

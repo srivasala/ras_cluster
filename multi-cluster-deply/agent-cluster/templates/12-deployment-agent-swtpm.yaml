@@ -5,6 +5,7 @@ metadata:
   namespace: {{ namespace }}
   labels:
     app: agent-{{ agent_id }}
+    app.kubernetes.io/name: keylime-agent
 spec:
   containers:
     - name: swtpm
@@ -35,10 +36,11 @@ spec:
           # --- Monitor Loop for Agent Error Signal ---
           while true; do
               echo "Running Context Flush..."
-              tpm2_flushcontext --transient-object --loaded-session --saved-session
+              #tpm2_flushcontext --transient-object --loaded-session --saved-session
               if [ -f /tmp/error-signal/flush_needed ]; then
                 cat /tmp/error-signal/flush_needed
                 rm -f /tmp/error-signal/flush_needed
+                tpm2_flushcontext --transient-object --loaded-session --saved-session
               fi
               sleep 30
           done
@@ -51,9 +53,7 @@ spec:
   
     - name: agent
       image: quay.io/keylime/keylime_agent
-      command:
-        - /bin/sh
-        - '-c'
+      command: ["/bin/sh", "-c"]
       args:
         - |
           # Wait for TPM to be initialized
@@ -120,9 +120,9 @@ spec:
       name: agent-config-{{ agent_id }}
   - name: tls
     secret:
-      secretName: agent-tls   # Change per service
+      secretName: agent-{{ agent_id }}-tls
   - name: keylime-data
-    emptyDir:
+    emptyDir: 
       medium: Memory
   - name: error-signal
     emptyDir: {}

@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: agent-{{ agent_id }}-service
+  name: keylime-agent-service
   namespace: {{ namespace }}
 spec:
   selector:
-    app: agent-{{ agent_id }}
+    app.kubernetes.io/name: keylime-agent
   ports:
   - protocol: TCP
     port: 9002
